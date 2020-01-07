@@ -9,6 +9,7 @@ import { ProgressComponent } from './progress/progress.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
+import { CategoriesComponent } from './categories/categories.component';
 
 const ROUTES: Routes = [
     {
@@ -44,6 +45,11 @@ const ROUTES: Routes = [
                 path: 'rxjs',
                 component: RxjsComponent,
                 data: { title: 'RxJS', desc: 'Async managment with observables from RxJS library' }
+            },
+            {
+                path: 'categories',
+                component: CategoriesComponent,
+                data: { title: 'Categorías', desc: 'Categorías de los productos registrados por el usuario' }
             },
             {
                 path: '',

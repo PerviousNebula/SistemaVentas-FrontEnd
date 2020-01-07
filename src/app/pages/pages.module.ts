@@ -3,12 +3,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
+import { HttpClientModule } from '@angular/common/http';
 
 // Local Modules
 import { SharedModule } from '../shared/shared.module';
 
 // Routes
 import { PAGES_ROUTES } from './pages.routes';
+
+// Shared Components
+import { CategoriesComponent } from './categories/categories.component';
 
 // Components
 import { PagesComponent } from './pages.component';
@@ -31,11 +35,13 @@ import { RxjsComponent } from './rxjs/rxjs.component';
         GraficoDonaComponent,
         AccountSettingsComponent,
         PromesasComponent,
-        RxjsComponent
+        RxjsComponent,
+        CategoriesComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
+        HttpClientModule,
         ChartsModule,
         PAGES_ROUTES,
         SharedModule
