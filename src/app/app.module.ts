@@ -1,16 +1,24 @@
-//Modules
+// Modules
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
-//Local Modules
+// NGRX
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { EffectsModule } from '@ngrx/effects';
+import { appReducers } from './store/app.reducer';
+import { effectsArr } from './store/effects/index';
+
+// Local Modules
 import { PagesModule } from './pages/pages.module';
 import { ServiceModule } from './services/service.module';
 
-//Routes
-import { APP_ROUTES } from "./app.routes";
+// Routes
+import { APP_ROUTES } from './app.routes';
 
-//Components
+// Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './login/register.component';
@@ -24,6 +32,12 @@ import { RegisterComponent } from './login/register.component';
   imports: [
     BrowserModule,
     FormsModule,
+    StoreModule.forRoot(appReducers),
+    EffectsModule.forRoot(effectsArr),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
     PagesModule,
     ServiceModule,
     APP_ROUTES

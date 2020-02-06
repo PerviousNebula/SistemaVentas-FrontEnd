@@ -1,4 +1,4 @@
 export interface Settings {
-    themeUrl:string;
-    theme:string;
+    themeUrl: string;
+    theme: string;
 }

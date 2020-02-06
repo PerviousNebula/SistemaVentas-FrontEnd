@@ -1,46 +1,72 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
-import Swal from 'sweetalert2';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/internal/operators/map';
+
+// Interfaces
+import { Categoria } from '../interfaces/pages/categoria';
+
+// Enviroments
+import { environment } from 'src/environments/environment';
 import { catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoriesService {
-  public numPage = 0;
-  public numPageFilter = 0;
 
   constructor(private http: HttpClient) { }
 
-  public getCategories(next: boolean = true) {
-    this.numPageFilter = 0;
-    (next) ? ++this.numPage : --this.numPage;
-    return this.http.get(`${environment.url}/categorias/listar?page=${   this.numPage}`);
-  }
-
-  public filterCategories(hint: string) {
-    this.numPage = 1;
-    return this.http.get(`${environment.url}/categorias/filtrar?page=${++this.numPageFilter}&hint=${hint}`)
+  public getCategorias(pageNumber: number = 1) {
+    return this.http.get<Categoria>(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${10}`, {observe: 'response'})
                     .pipe(
-                        catchError((error => {
-                          Swal.fire('Error', error.error.message, 'error');
-                          return of();
-                    })));
+                      map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
+                      catchError((error: any) => this.errorHandler(error))
+                    );
+}
+
+  public createCategoria(categoria: Categoria) {
+    return this.http.post<Categoria>(`${environment.url}/categorias/crear`, categoria, {observe: 'response'})
+                    .pipe(
+                      map((resp: any) => ({ categorias: resp.body.categorias, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
+                      catchError((error: any) => this.errorHandler(error))
+                    );
   }
 
-  public createCategory(nombre: string, descripcion: string) {
-    if (nombre.length > 3) {
-      return this.http.post(`${environment.url}/categorias/crear`, {nombre, descripcion})
-                      .pipe(
-                        catchError((error) => {
-                          Swal.fire('Error', error.error.message, 'error');
-                          return of();
-                      }));
-    } else {
-      Swal.fire('Nombre inválido', 'El nombre de la categoría debe tener por lo menos 3 caracteres', 'error');
-      return of();
-    }
+  public editCategoria(categoria: Categoria) {
+    return this.http.put<Categoria>(`${environment.url}/categorias/actualizar`, categoria)
+                    .pipe(
+                      map((resp: any) => resp.categorias),
+                      catchError((error: any) => this.errorHandler(error))
+                    );
   }
+
+  public activateCategoria(idCategoria: number) {
+    return this.http.put(`${environment.url}/categorias/activar/${idCategoria}`, {})
+                    .pipe(
+                      catchError((error: any) => this.errorHandler(error))
+                    );
+  }
+
+  public desactivateCategoria(idCategoria: number) {
+    return this.http.put(`${environment.url}/categorias/desactivar/${idCategoria}`, {})
+                    .pipe(
+                      catchError((error: any) => this.errorHandler(error))
+                    );
+  }
+
+  public filterCategoria(hint: string, pageNumber: number) {
+    return this.http.get(`${environment.url}/categorias/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${10}`, {observe: 'response'})
+                    .pipe(
+                      map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
+                      catchError((error: any) => this.errorHandler(error))
+                    );
+  }
+
+  private errorHandler(error: HttpErrorResponse) {
+    Swal.fire(`Error ${error.status}`, error.message, 'error');
+    return throwError(error || 'Error del servidor, intente más tarde');
+  }
+
 }

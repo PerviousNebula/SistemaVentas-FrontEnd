@@ -1,62 +1,74 @@
-<div class="row">
+<div class="row animated fadeIn">
     <div class="col-12">
         <div class="card">
-            <div class="card-body">
+            <div *ngIf="!loading" class="card-body">
                 <h4 class="card-title">Filtra fácilmente tus categorías registradas</h4>
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
-                <div class="table-responsive m-t-40">
+                <div *ngIf="categorias" class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
                         <div class="dt-buttons">
                             <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
                             <a class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>PDF</span></a>
                             <a class="dt-button buttons-print" tabindex="0" aria-controls="example23" href="#"><span>Imprimir</span></a>
                         </div>
-                        <div id="example23_filter" class="dataTables_filter"><label>Buscar:<input #hintInput type="search" class="" placeholder="" aria-controls="example23" (keyup)="filterCategories(hintInput.value)"></label></div>
+                        <div id="example23_filter" class="dataTables_filter">
+                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre" aria-controls="example23"></label>
+                        </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descripción</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="2">
-                                        <button class="btn btn-primary btn-sm" (click)="createCategory()"><i class="fa fa-plus mr-1"></i>Nueva Categoría</button>
+                                    <th class="text-right" rowspan="1" colspan="4">
+                                        <button class="btn btn-primary btn-sm" (click)="newCategoria()"><i class="fa fa-plus mr-1"></i>Nueva Categoría</button>
                                     </th>
                                 </tr>
                             </tfoot>
                             <tbody>
-                                <ng-container *ngIf="categories.length">
-                                    <tr role="row" *ngFor="let category of categories">
-                                        <td>{{ category.nombre }}</td>
-                                        <td>{{ category.descripcion }}</td>
-                                    </tr>
-                                </ng-container>
-                                <tr *ngIf="!categories.length && !loading">
-                                    <td align="center" colspan="2">
-                                        <i class="mdi mdi-flask-empty-outline"></i>
-                                        <h5>No hay categorías registradas...</h5>
+                                <tr *ngFor="let categoria of categorias">
+                                    <td>{{ categoria.nombre }}</td>
+                                    <td>{{ categoria.descripcion }}</td>
+                                    <td>
+                                        <span *ngIf="categoria.activo" class="badge badge-success">ACTIVA</span>
+                                        <span *ngIf="!categoria.activo" class="badge badge-danger">INACTIVA</span>
                                     </td>
-                                </tr>
-                                <tr *ngIf="loading">
-                                    <td align="center" colspan="2">
-                                        <i class="fa fa-spinner fa-spin fa-2x"></i>
-                                        <h5>Cargando...</h5>
+                                    <td>
+                                        <button class="btn btn-sm btn-info mr-1" (click)="editCategoria(categoria)"><i class="fa fa-edit"></i></button>
+                                        <button *ngIf="categoria.activo" class="btn btn-sm btn-danger" (click)="desactivateCategoria(categoria)"><i class="fa fa-trash"></i></button>
+                                        <button *ngIf="!categoria.activo" class="btn btn-sm btn-info" (click)="activateCategoria(categoria)"><i class="fa fa-undo"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="dataTables_info" id="example23_info" role="status" aria-live="polite">Mostrando {{ categoriesService.numPage * 10 - 9 }} a {{ categoriesService.numPage * 10 }} de {{ total }} registros</div>
-                        <div class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <a class="paginate_button previous" aria-controls="example" data-dt-idx="0" tabindex="0" id="example_previous" [ngClass]="{'disabled': categoriesService.numPage - 1 == 0}">Anterior</a>
+                        <div *ngIf="pagination" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
+                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
+                        </div>
+                        <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
+                                    tabindex="0" id="example_previous" (click)="getCategorias(-1)">
+                                Anterior
+                            </button>
                             <span>
-                                <a *ngIf="categoriesService.numPage" class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ categoriesService.numPage }}</a>
+                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
                             </span>
-                            <a class="paginate_button next" aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next" [ngClass]="{'disabled': categoriesService.numPage * 10 >= total}" (click)="filterCategories(hintInput.value)">Siguiente</a>
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getCategorias(1)" class="paginate_button next" 
+                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
+                                Siguiente
+                            </button>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div *ngIf="loading" class="card-body text-center">
+                <i class="fa fa-spinner fa-spin fa-4x"></i>
+                <br>
+                <span>Cargando sus categorías...</span>
             </div>
         </div>
     </div>

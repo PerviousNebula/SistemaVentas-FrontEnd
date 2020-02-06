@@ -1,90 +1,139 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
-// Services
-import { CategoriesService } from '../../services/categories.service';
-import { Subscription } from 'rxjs';
+// Interfaces
+import { Categoria, Pagination } from '../../interfaces/interfaces.index';
+
+// NGRX
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/app.reducer';
+import * as categoriasActions from '../../store/actions';
 
 @Component({
   selector: 'app-categories',
   templateUrl: './categories.component.html'
 })
 export class CategoriesComponent implements OnInit, OnDestroy {
-  public categories: any[] = [];
-  public loading = false;
-  public total = 0;
-  public getCategoriesSubs = new Subscription();
-  public filterCategoriesSubs = new Subscription();
-  public createCategorySubs = new Subscription();
+  public loading: boolean;
+  public categorias: Categoria[];
+  public pagination: Pagination;
+  private subscriptions: Subscription = new Subscription();
 
-  constructor(public categoriesService: CategoriesService) { }
+  // Variables para el manejo del filtrado
+  public filterHint: string;
+  public filtering = false;
+
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
-    this.loading = true;
-    this.getCategoriesSubs = this.categoriesService.getCategories().subscribe((resp: any) => {
-      this.categories = resp.categorias;
-      this.total = resp.total;
-      this.loading = false;
-    });
+    this.subscriptions.add(this.store.select('categorias').subscribe(node => {
+      this.loading = node.loading;
+      this.categorias = node.categorias;
+      this.pagination = node.pagination;
+    }));
+    this.store.dispatch(new categoriasActions.CargarCategorias(1));
   }
 
   ngOnDestroy() {
-    this.getCategoriesSubs.unsubscribe();
-    this.filterCategoriesSubs.unsubscribe();
-    this.createCategorySubs.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
-  public async createCategory() {
+  getCategorias(page: number) {
+    if (!this.filtering) {
+      this.store.dispatch(new categoriasActions.CargarCategorias(this.pagination.CurrentPage + page));
+    } else {
+      this.filtrar(page);
+    }
+  }
+
+  async newCategoria() {
     const { value: formValues } = await Swal.fire({
-      title: 'Nueva Categoría',
+      title: 'Nueva categoría',
       html:
-        `<div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="ti-pencil"></i></div>
-            <input type="text" class="form-control" id="nombreCategoria" placeholder='Nombre de la Categoría'>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group">
-            <div class="input-group-addon"><i class="ti-pencil-alt"></i></div>
-            <input type="text" class="form-control" id="descCategoria" placeholder='Descripción de la Categoría'>
-          </div>
-        </div>
-        `,
+        '<input id="swal-input1" class="swal2-input" placeholder="Nombre de la categoría" />' +
+        '<input id="swal-input2" class="swal2-input" placeholder="Descripción de la categoría" />',
       focusConfirm: false,
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancelar',
       preConfirm: () => {
         return {
-          nombre: (document.getElementById('nombreCategoria') as HTMLInputElement).value,
-          descripcion: (document.getElementById('descCategoria') as HTMLInputElement).value
+          nombre: (document.getElementById('swal-input1') as HTMLInputElement).value,
+          descripcion: (document.getElementById('swal-input2') as HTMLInputElement).value
         };
       }
     });
 
-    if (formValues) {
-      this.createCategorySubs = this.categoriesService.createCategory(formValues.nombre, formValues.descripcion).subscribe((resp: any) => {
-        Swal.fire('Wojoo!', resp.message, 'success');
-        this.getCategoriesSubs = this.categoriesService.getCategories().subscribe((data: any) => {
-          this.categories = data.categorias;
-          this.total = data.total;
-        });
-      });
+    if (formValues && formValues.nombre) {
+      this.store.dispatch(new categoriasActions.CrearCategoria(formValues));
+      this.filterHint = '';
+    } else if (formValues && !formValues.nombre) {
+      Swal.fire('Nueva categoría', 'El nombre de la categoría es obligatorio!', 'error');
     }
   }
 
-  public filterCategories(hint: string) {
-    this.loading = true;
-    this.categories = [];
-    if (hint) {
-      this.filterCategoriesSubs = this.categoriesService.filterCategories(hint).subscribe((resp: any) => {
-        this.categories = resp.categorias;
-        this.total = resp.total;
-        this.loading = false;
-      });
+  async editCategoria(categoria: Categoria) {
+    const { value: formValues } = await Swal.fire({
+      title: 'Editar categoría',
+      html:
+        `<input id="swal-input1" class="swal2-input" value="${categoria.nombre}" placeholder="Nombre de la categoría" />
+          <input id="swal-input2" class="swal2-input" value="${categoria.descripcion}" placeholder="Descripción de la categoría" />`,
+      focusConfirm: false,
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancelar',
+      preConfirm: () => {
+        return {
+          nombre: (document.getElementById('swal-input1') as HTMLInputElement).value,
+          descripcion: (document.getElementById('swal-input2') as HTMLInputElement).value
+        };
+      }
+    });
+    if (formValues && formValues.nombre) {
+      categoria.nombre = formValues.nombre;
+      categoria.descripcion = formValues.descripcion;
+      this.store.dispatch(new categoriasActions.EditCategoria(categoria));
+    } else if (formValues && !formValues.nombre) {
+      Swal.fire('Editar categoría', 'El nombre de la categoría es obligatorio!', 'error');
+    }
+  }
+
+  activateCategoria(categoria: Categoria) {
+    categoria.activo = true;
+    this.store.dispatch(new categoriasActions.ActivarCategorias(categoria));
+  }
+
+  async desactivateCategoria(categoria: Categoria) {
+    Swal.fire({
+      title: 'Desactivar categoría',
+      text: `¿Está seguro que desea desactivar la categoria ${categoria.nombre}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Sí, desactivar!'
+    }).then((result) => {
+      if (result.value) {
+        categoria.activo = false;
+        this.store.dispatch(new categoriasActions.DesactivarCategorias(categoria));
+      }
+    });
+  }
+
+  filtrar(page: number = 0) {
+    if (this.filterHint.length) {
+      this.filtering = true;
+      this.store.dispatch(new categoriasActions.FiltrarCategorias(
+        {
+          hint: this.filterHint,
+          page: !page ? 1 : this.pagination.CurrentPage + page
+        }
+      ));
     } else {
-      this.getCategoriesSubs = this.categoriesService.getCategories().subscribe((resp: any) => {
-        this.categories = resp.categorias;
-        this.loading = false;
-      });
+      this.filtering = false;
+      this.store.dispatch(new categoriasActions.CargarCategorias(1));
     }
   }
 
