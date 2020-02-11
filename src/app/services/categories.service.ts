@@ -29,7 +29,13 @@ export class CategoriesService {
   public createCategoria(categoria: Categoria) {
     return this.http.post<Categoria>(`${environment.url}/categorias/crear`, categoria, {observe: 'response'})
                     .pipe(
-                      map((resp: any) => ({ categorias: resp.body.categorias, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
+                      map((resp: any) => {
+                        Swal.fire('Categoría creada', 'Tu categoría ha sido agregada', 'success');
+                        return {
+                          categorias: resp.body.categorias,
+                          pagination: JSON.parse(resp.headers.get('X-Pagination'))
+                        };
+                      }),
                       catchError((error: any) => this.errorHandler(error))
                     );
   }
@@ -37,7 +43,10 @@ export class CategoriesService {
   public editCategoria(categoria: Categoria) {
     return this.http.put<Categoria>(`${environment.url}/categorias/actualizar`, categoria)
                     .pipe(
-                      map((resp: any) => resp.categorias),
+                      map((resp: any) => {
+                        Swal.fire('Editar categoría', 'Su categoría ha sido editada!', 'success');
+                        return resp.categorias;
+                      }),
                       catchError((error: any) => this.errorHandler(error))
                     );
   }
@@ -45,6 +54,7 @@ export class CategoriesService {
   public activateCategoria(idCategoria: number) {
     return this.http.put(`${environment.url}/categorias/activar/${idCategoria}`, {})
                     .pipe(
+                      map(() => Swal.fire('Activar categoría', 'Su categoría ha sido activada!', 'success')),
                       catchError((error: any) => this.errorHandler(error))
                     );
   }
@@ -52,6 +62,7 @@ export class CategoriesService {
   public desactivateCategoria(idCategoria: number) {
     return this.http.put(`${environment.url}/categorias/desactivar/${idCategoria}`, {})
                     .pipe(
+                      map(() => Swal.fire('Desactivar categoría', 'Su categoría ha sido desactivada!', 'success')),
                       catchError((error: any) => this.errorHandler(error))
                     );
   }

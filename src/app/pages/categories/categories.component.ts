@@ -51,8 +51,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     const { value: formValues } = await Swal.fire({
       title: 'Nueva categoría',
       html:
-        '<input id="swal-input1" class="swal2-input" placeholder="Nombre de la categoría" />' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Descripción de la categoría" />',
+        `<label style="position:absolute" for="articulo-nombre">Nombre <span style="color:red"> *</span></label>
+         <input id="swal-input1" class="swal2-input" placeholder="Nombre de la categoría" />
+         <label style="position:absolute" for="articulo-nombre">Descripción</label>
+         <input id="swal-input2" class="swal2-input" placeholder="Descripción de la categoría" />`,
       focusConfirm: false,
       showCancelButton: true,
       cancelButtonColor: '#d33',
@@ -77,8 +79,10 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     const { value: formValues } = await Swal.fire({
       title: 'Editar categoría',
       html:
-        `<input id="swal-input1" class="swal2-input" value="${categoria.nombre}" placeholder="Nombre de la categoría" />
-          <input id="swal-input2" class="swal2-input" value="${categoria.descripcion}" placeholder="Descripción de la categoría" />`,
+        `<label style="position:absolute" for="swal-input1">Nombre <span style="color:red"> *</span></label>
+         <input id="swal-input1" class="swal2-input" value="${categoria.nombre}" placeholder="Nombre de la categoría" />
+         <label style="position:absolute" for="swal-input2">Descripción</label>
+         <input id="swal-input2" class="swal2-input" value="${categoria.descripcion}" placeholder="Descripción de la categoría" />`,
       focusConfirm: false,
       showCancelButton: true,
       cancelButtonColor: '#d33',

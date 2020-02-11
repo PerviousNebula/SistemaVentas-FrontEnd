@@ -10,6 +10,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { CategoriesComponent } from './categories/categories.component';
+import { ProductsComponent } from './products/products.component';
 
 const ROUTES: Routes = [
     {
@@ -50,6 +51,11 @@ const ROUTES: Routes = [
                 path: 'categories',
                 component: CategoriesComponent,
                 data: { title: 'Categorías', desc: 'Categorías de los productos registrados por el usuario' }
+            },
+            {
+                path: 'products',
+                component: ProductsComponent,
+                data: { title: 'Artículos', desc: 'Artículos registrados por el usuario' }
             },
             {
                 path: '',

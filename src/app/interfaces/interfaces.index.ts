@@ -1,5 +1,6 @@
 // Pages
 export { Categoria } from './pages/categoria';
+export { Articulo } from './pages/articulo';
 
 // Settings
 export { Settings } from './settings/settings';

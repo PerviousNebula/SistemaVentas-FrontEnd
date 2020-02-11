@@ -2,9 +2,9 @@
     <div class="col-12">
         <div class="card">
             <div *ngIf="!loading" class="card-body">
-                <h4 class="card-title">Filtra fácilmente tus categorías registradas</h4>
+                <h4 class="card-title">Filtra fácilmente tus artículos registrados</h4>
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
-                <div *ngIf="categorias" class="table-responsive m-t-40">
+                <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
                         <div class="dt-buttons">
                             <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
@@ -12,36 +12,44 @@
                             <a class="dt-button buttons-print" tabindex="0" aria-controls="example23" href="#"><span>Imprimir</span></a>
                         </div>
                         <div id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre de la categoría" aria-controls="example23"></label>
+                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Nombre del artículo" aria-controls="example23"></label>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descripción</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Código</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Precio</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Stock</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Categoría</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="4">
-                                        <button class="btn btn-primary btn-sm" (click)="newCategoria()"><i class="fa fa-plus mr-1"></i>Nueva Categoría</button>
+                                    <th class="text-right" rowspan="1" colspan="8">
+                                        <button class="btn btn-primary btn-sm" (click)="newArticulo()"><i class="fa fa-plus mr-1"></i>Nuevo Producto</button>
                                     </th>
                                 </tr>
                             </tfoot>
                             <tbody>
-                                <tr *ngFor="let categoria of categorias">
-                                    <td>{{ categoria.nombre }}</td>
-                                    <td>{{ categoria.descripcion }}</td>
+                                <tr *ngFor="let articulo of articulos">
+                                    <td>{{ articulo.nombre }}</td>
+                                    <td>{{ articulo.descripcion }}</td>
+                                    <td>{{ articulo.codigo }}</td>
+                                    <td>{{ articulo.precio_venta | currency }}</td>
+                                    <td>{{ articulo.stock }}</td>
+                                    <td>{{ articulo.categoria }}</td>
                                     <td>
-                                        <span *ngIf="categoria.activo" class="badge badge-success">ACTIVA</span>
-                                        <span *ngIf="!categoria.activo" class="badge badge-danger">INACTIVA</span>
+                                        <span *ngIf="articulo.activo" class="badge badge-success">ACTIVO</span>
+                                        <span *ngIf="!articulo.activo" class="badge badge-danger">INACTIVO</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-info mr-1" (click)="editCategoria(categoria)"><i class="fa fa-edit"></i></button>
-                                        <button *ngIf="categoria.activo" class="btn btn-sm btn-danger" (click)="desactivateCategoria(categoria)"><i class="fa fa-trash"></i></button>
-                                        <button *ngIf="!categoria.activo" class="btn btn-sm btn-info" (click)="activateCategoria(categoria)"><i class="fa fa-undo"></i></button>
+                                        <button class="btn btn-sm btn-info mr-1" (click)="editArticulo(articulo)"><i class="fa fa-edit"></i></button>
+                                        <button *ngIf="articulo.activo" class="btn btn-sm btn-danger" (click)="desactivateArticulo(articulo)"><i class="fa fa-trash"></i></button>
+                                        <button *ngIf="!articulo.activo" class="btn btn-sm btn-info" (click)="activateArticulo(articulo)"><i class="fa fa-undo"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -51,13 +59,13 @@
                         </div>
                         <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
                             <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getCategorias(-1)">
+                                    tabindex="0" id="example_previous" (click)="getArticulos(-1)">
                                 Anterior
                             </button>
                             <span>
                                 <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
                             </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getCategorias(1)" class="paginate_button next" 
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getArticulos(1)" class="paginate_button next" 
                                     aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
                                 Siguiente
                             </button>
@@ -68,7 +76,7 @@
             <div *ngIf="loading" class="card-body text-center">
                 <i class="fa fa-spinner fa-spin fa-4x"></i>
                 <br>
-                <span>Cargando sus categorías...</span>
+                <span>Cargando sus productos...</span>
             </div>
         </div>
     </div>

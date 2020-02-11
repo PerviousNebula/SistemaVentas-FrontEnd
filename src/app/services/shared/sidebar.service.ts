@@ -34,16 +34,16 @@ export class SidebarService {
         title: 'Compras',
         icon: 'mdi mdi-cart-outline',
         subcategories: [
-          { title: 'Ingresos', url: '' },
-          { title: 'Proveedores', url: '/products' }
+          { title: 'Ingresos', url: '/incomes' },
+          { title: 'Proveedores', url: '/providers' }
         ]
       },
       {
         title: 'Ventas',
         icon: 'mdi mdi-cash',
         subcategories: [
-          { title: 'Ventas', url: '' },
-          { title: 'Clientes', url: '/product' }
+          { title: 'Ventas', url: '/sells' },
+          { title: 'Clientes', url: '/clients' }
         ]
       }
     ];

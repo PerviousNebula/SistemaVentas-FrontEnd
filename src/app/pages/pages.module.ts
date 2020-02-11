@@ -24,6 +24,7 @@ import { GraficoDonaComponent } from '../components/grafico-dona/grafico-dona.co
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
+import { ProductsComponent } from './products/products.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +37,8 @@ import { RxjsComponent } from './rxjs/rxjs.component';
         AccountSettingsComponent,
         PromesasComponent,
         RxjsComponent,
-        CategoriesComponent
+        CategoriesComponent,
+        ProductsComponent
     ],
     imports: [
         CommonModule,
