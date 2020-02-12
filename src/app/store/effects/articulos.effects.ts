@@ -47,7 +47,9 @@ export class ArticulosEffects {
         ofType(articulosActions.EDITAR_ARTICULOS),
         switchMap((action: articulosActions.EditarArticulos) => {
             return this.articulosService.editArticulos(action.payload).pipe(
-                map((articulos: Articulo[]) => new articulosActions.EditarArticulosSuccess(articulos)),
+                map((resp: any) => new articulosActions.EditarArticulosSuccess(
+                    {articulos: resp.articulos, pagination: resp.pagination}
+                )),
                 catchError(error => of(new articulosActions.EditarArticulosFail(error)))
             );
         })

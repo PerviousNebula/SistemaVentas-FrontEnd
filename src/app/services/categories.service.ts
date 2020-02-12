@@ -18,13 +18,14 @@ export class CategoriesService {
 
   constructor(private http: HttpClient) { }
 
-  public getCategorias(pageNumber: number = 1) {
-    return this.http.get<Categoria>(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${10}`, {observe: 'response'})
+  public getCategorias(pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get<Categoria>(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+                                    {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError((error: any) => this.errorHandler(error))
                     );
-}
+  }
 
   public createCategoria(categoria: Categoria) {
     return this.http.post<Categoria>(`${environment.url}/categorias/crear`, categoria, {observe: 'response'})
@@ -41,11 +42,11 @@ export class CategoriesService {
   }
 
   public editCategoria(categoria: Categoria) {
-    return this.http.put<Categoria>(`${environment.url}/categorias/actualizar`, categoria)
+    return this.http.put<Categoria>(`${environment.url}/categorias/actualizar`, categoria, {observe: 'response'})
                     .pipe(
                       map((resp: any) => {
                         Swal.fire('Editar categoría', 'Su categoría ha sido editada!', 'success');
-                        return resp.categorias;
+                        return { categorias: resp.body.categorias, pagination: JSON.parse(resp.headers.get('X-Pagination')) };
                       }),
                       catchError((error: any) => this.errorHandler(error))
                     );

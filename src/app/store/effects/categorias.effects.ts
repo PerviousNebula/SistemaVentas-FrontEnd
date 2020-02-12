@@ -4,7 +4,6 @@ import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 import { CategoriesService } from '../../services/service.index';
-import { Categoria } from '../../interfaces/interfaces.index';
 import * as categoriasActions from '../actions';
 
 @Injectable()
@@ -17,7 +16,7 @@ export class CategoriasEffects {
     cargarCategorias$ = this.actions$.pipe(
         ofType(categoriasActions.CARGAR_CATEGORIAS),
         switchMap((action: categoriasActions.CargarCategorias) => {
-            return this.categoriasService.getCategorias(action.payload).pipe(
+            return this.categoriasService.getCategorias(action.payload.pageNumber, action.payload.pageSize).pipe(
                 map((resp: any) => new categoriasActions.CargarCategoriasSuccess(
                         {
                             categorias: resp.categorias,
@@ -47,7 +46,9 @@ export class CategoriasEffects {
         ofType(categoriasActions.EDITAR_CATEGORIA),
         switchMap((action: categoriasActions.EditCategoria) => {
             return this.categoriasService.editCategoria(action.payload).pipe(
-                map((categorias: Categoria[]) => new categoriasActions.EditCategoriaSuccess(categorias)),
+                map((resp: any) => new categoriasActions.EditCategoriaSuccess(
+                    {categorias: resp.categorias, pagination: resp.pagination}
+                )),
                 catchError(error => of(new categoriasActions.EditCategoriaFail(error)))
             );
         })

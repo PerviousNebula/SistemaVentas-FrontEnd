@@ -39,11 +39,11 @@ export class ProductsService {
   }
 
   public editArticulos(articulo: Articulo) {
-    return this.http.put<Articulo[]>(`${environment.url}/articulos/actualizar`, articulo)
+    return this.http.put<Articulo[]>(`${environment.url}/articulos/actualizar`, articulo, {observe: 'response'})
                     .pipe(
                       map((resp: any) => {
                         Swal.fire('Editar artículo', 'Su artículo ha sido editado!', 'success');
-                        return resp.articulos;
+                        return {articulos: resp.body.articulos, pagination: JSON.parse(resp.headers.get('X-Pagination'))};
                       }),
                       catchError(error => this.errorHandler(error))
                     );

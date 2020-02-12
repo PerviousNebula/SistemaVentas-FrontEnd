@@ -75,7 +75,8 @@ export function categoriasReducer(state = estadoInicial, action: fromCategorias.
         case fromCategorias.EDITAR_CATEGORIA_SUCCESS:
             return {
                 ...state,
-                categorias: [...action.categorias],
+                categorias: [...action.payload.categorias],
+                pagination: {...action.payload.pagination},
                 loading: false,
                 loaded: true
             };

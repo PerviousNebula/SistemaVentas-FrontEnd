@@ -76,7 +76,7 @@ export class EditarArticulosFail implements Action {
 export class EditarArticulosSuccess implements Action {
     readonly type = EDITAR_ARTICULOS_SUCCESS;
 
-    constructor(public articulos: Articulo[]) { }
+    constructor(public payload: any) { }
 }
 
 export class DesactivarArticulos implements Action {

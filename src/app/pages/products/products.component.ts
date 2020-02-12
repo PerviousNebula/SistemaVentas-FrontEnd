@@ -33,7 +33,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }));
     this.subscription.add(this.store.select('categorias').subscribe(node => this.categorias = node.categorias));
     this.store.dispatch(new articulosActions.CargarArticulos(1));
-    this.store.dispatch(new articulosActions.CargarCategorias(1));
+    this.store.dispatch(new articulosActions.CargarCategorias({pageNumber: 1, pageSize: 50}));
   }
 
   ngOnDestroy() {

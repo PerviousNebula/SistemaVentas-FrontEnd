@@ -76,7 +76,7 @@ export class EditCategoriaFail implements Action {
 export class EditCategoriaSuccess implements Action {
     readonly type = EDITAR_CATEGORIA_SUCCESS;
 
-    constructor(public categorias: Categoria[]) { }
+    constructor(public payload: any) { }
 }
 
 export class FiltrarCategorias implements Action {

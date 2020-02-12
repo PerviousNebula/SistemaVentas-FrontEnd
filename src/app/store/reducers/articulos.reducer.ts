@@ -77,7 +77,8 @@ export function articulosReducer(state = estadoInicial, action: fromArticulos.ar
                 ...state,
                 loading: false,
                 loaded: true,
-                articulos: [...action.articulos]
+                articulos: [...action.payload.articulos],
+                pagination: {...action.payload.pagination}
             };
         case fromArticulos.EDITAR_ARTICULOS_FAIL:
             return {
