@@ -1,7 +1,7 @@
 // Modules
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -25,6 +25,13 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { ProductsComponent } from './products/products.component';
+import { RolesComponent } from './roles/roles.component';
+import { UsersComponent } from './users/users.component';
+import { UsersManagmentComponent } from './users-managment/users-managment.component';
+
+// Pipes
+import { NoImgPipe } from '../pipes/no-img.pipe';
+import { ImageOverlayComponent } from '../components/image-overlay/image-overlay.component';
 
 @NgModule({
     declarations: [
@@ -34,15 +41,21 @@ import { ProductsComponent } from './products/products.component';
         Graficas1Component,
         IncrementadorComponent,
         GraficoDonaComponent,
+        ImageOverlayComponent,
         AccountSettingsComponent,
         PromesasComponent,
         RxjsComponent,
         CategoriesComponent,
-        ProductsComponent
+        ProductsComponent,
+        RolesComponent,
+        UsersComponent,
+        NoImgPipe,
+        UsersManagmentComponent
     ],
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpClientModule,
         ChartsModule,
         PAGES_ROUTES,

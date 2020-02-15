@@ -1,6 +1,8 @@
 // Pages
 export { Categoria } from './pages/categoria';
 export { Articulo } from './pages/articulo';
+export { Rol } from './pages/rol';
+export { Usuario } from './pages/usuario';
 
 // Settings
 export { Settings } from './settings/settings';

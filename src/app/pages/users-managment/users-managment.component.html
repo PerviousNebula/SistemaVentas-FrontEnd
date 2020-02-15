@@ -1,0 +1,100 @@
+<div class="row animated fadeIn">
+    <!-- Column -->
+    <div *ngIf="!loading" class="col-12">
+        <div class="card">
+            <div class="tab-content">
+                <div class="tab-pane active" id="settings" role="tabpanel" aria-expanded="true">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-4">
+                                <input (change)="showImgPreview($event)" accept="image/png, image/jpeg, image/jpg" class="d-none" type="file" id="imgUrlInput" />
+                                <img (click)="selectImg()" class="img img-thumbnail cursor-pointer" [src]="formUsuario.controls['imgUrl'].value" />
+                            </div>
+                            <div class="col-sm-12 col-lg-8">
+                                <form (ngSubmit)="createUser()" [formGroup]="formUsuario" class="form-horizontal form-material">
+                                    <div class="form-group" [ngClass]="{'text-danger animated shake': formUsuario.controls['nombre'].errors && formUsuario.controls['nombre'].touched}">
+                                        <label class="col-md-12">Nombre <span class="text-danger"> *</span></label>
+                                        <div class="col-md-12">
+                                            <input formControlName="nombre" type="text" placeholder="Nombre del usuario" class="form-control form-control-line">
+                                            <span *ngIf="formUsuario.controls['nombre'].errors && formUsuario.controls['nombre'].touched">Este campo es obligatorio</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group" [ngClass]="{'text-danger animated shake': formUsuario.controls['email'].errors && formUsuario.controls['email'].touched}">
+                                        <label for="example-email" class="col-md-12">Correo electrónico <span class="text-danger"> *</span></label>
+                                        <div class="col-md-12">
+                                            <input formControlName="email" type="email" autocomplete="off" placeholder="Email del usuario" class="form-control form-control-line" name="example-email" id="example-email">
+                                            <span *ngIf="formUsuario.controls['email'].errors?.required && formUsuario.controls['email'].touched">Este campo es obligatorio</span>
+                                            <span *ngIf="formUsuario.controls['email'].errors?.email && formUsuario.controls['email'].touched">Esta no es una dirección de correo electrónico válida</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-md-6" [ngClass]="{'text-danger animated shake': formUsuario.controls['password'].errors && formUsuario.controls['password'].touched}">
+                                                <label class="col-md-6">Contraseña <span class="text-danger"> *</span></label>
+                                                <input formControlName="password" type="password" placeholder="Password del usuario" class="ml-3 form-control form-control-line">
+                                                <span class="ml-3" *ngIf="formUsuario.controls['password'].errors?.required && formUsuario.controls['password'].touched">Este campo es obligatorio</span>
+                                            </div>
+                                            <div class="col-md-6" [ngClass]="{'text-danger animated shake': formUsuario.controls['confirm_password'].errors && formUsuario.controls['confirm_password'].touched}">
+                                                <label class="col-md-6">Confirmar <span class="text-danger"> *</span></label>
+                                                <input formControlName="confirm_password" type="password" placeholder="Confirmar password" class="ml-3 form-control form-control-line">
+                                                <span class="ml-3" *ngIf="formUsuario.controls['confirm_password'].errors?.required && formUsuario.controls['confirm_password'].touched">Este campo es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Dirección</label>
+                                        <div class="col-md-12">
+                                            <input formControlName="direccion" type="text" placeholder="Dirección del usuario" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" [ngClass]="{'text-danger animated shake': formUsuario.controls['telefono'].errors && formUsuario.controls['telefono'].touched}">
+                                        <label class="col-md-12">Teléfono</label>
+                                        <div class="col-md-12">
+                                            <input formControlName="telefono" type="text" placeholder="Número de contacto" class="form-control form-control-line">
+                                            <span *ngIf="formUsuario.controls['telefono'].errors?.minlength && formUsuario.controls['telefono'].touched">Este número de télefono es inválido</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Tipo de documento</label>
+                                        <div class="col-md-12">
+                                            <input formControlName="tipo_documento" type="text" placeholder="CURP, RFC, etc" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Número de documento / Serie</label>
+                                        <div class="col-md-12">
+                                            <input formControlName="num_documento" type="text" placeholder="Número de serie" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" [ngClass]="{'text-danger animated shake': formUsuario.controls['idRol'].errors && formUsuario.controls['idRol'].touched}">
+                                        <label class="col-sm-12">Rol <span class="text-danger"> *</span></label>
+                                        <div class="col-sm-12">
+                                            <select formControlName="idRol" class="form-control form-control-line">
+                                                <option value="">Tipo de usuario</option>
+                                                <option value="3">Administrador</option>
+                                                <option value="4">Almacenista</option>
+                                                <option value="5">Vendedor</option>
+                                            </select>
+                                            <span *ngIf="formUsuario.controls['idRol'].errors?.required && formUsuario.controls['idRol'].touched">Este campo es obligatorio</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12 text-right">
+                                            <button class="btn btn-danger mr-1" (click)="confirmCancel($event)">Cancelar</button>
+                                            <button type="submit" [disabled]="formUsuario.invalid" [ngClass]="{'disabled': formUsuario.invalid}" class="btn btn-success">Guardar Cambios</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loading" class="col-12 text-center">
+        <i class="fa fa-4x fa-spinner fa-spin"></i>
+        <br>
+        <span>Cargando...</span>
+    </div>
+</div>

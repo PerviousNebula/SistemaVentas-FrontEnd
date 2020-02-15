@@ -7,3 +7,17 @@
 .not-allowed {
     cursor: not-allowed !important;
 }
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.display-overlay {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    z-index: 99999;
+    background-color: rgba(0,0,0,0.5);
+}

@@ -1,0 +1,74 @@
+<div class="row animated fadeIn">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Filtra fácilmente los usuarios registrados en el sistema</h4>
+                <h6 class="card-subtitle">Edite y cambie el estado de los usuarios</h6>
+                <div class="table-responsive m-t-40">
+                    <div id="example23_wrapper" class="dataTables_wrapper">
+                        <div id="example23_filter" class="dataTables_filter">
+                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre del usuario" aria-controls="example23"></label>
+                        </div>
+                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;"></th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Email</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Teléfono</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Rol</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Estado</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-right" rowspan="1" colspan="7">
+                                        <a class="btn btn-primary btn-sm" [routerLink]="['/users','nuevo']"><i class="fa fa-plus mr-1"></i>Nuevo Usuario</a>
+                                    </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <tr *ngFor="let usuario of usuarios">
+                                    <td width="10%">
+                                        <img (click)="imgOverlayService.mostrarModal(usuario.imgUrl)" class="img img-thumbnail cursor-pointer" [src]="usuario.imgUrl | noImg" alt="profile-pic" />
+                                    </td>
+                                    <td class="align-middle">{{ usuario.nombre }}</td>
+                                    <td class="align-middle">{{ usuario.email }}</td>
+                                    <td class="align-middle">{{ usuario.telefono }}</td>
+                                    <td class="align-middle">{{ usuario.rol }}</td>
+                                    <td class="align-middle">
+                                        <span *ngIf="usuario.activo" class="badge badge-success">ACTIVO</span>
+                                        <span *ngIf="!usuario.activo" class="badge badge-danger">INACTIVO</span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <button class="btn btn-sm btn-info mr-1"><i class="fa fa-edit"></i></button>
+                                        <button *ngIf="usuario.activo" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button *ngIf="!usuario.activo" class="btn btn-sm btn-info"><i class="fa fa-undo"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div *ngIf="pagination" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
+                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
+                        </div>
+                        <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
+                                    tabindex="0" id="example_previous" (click)="getCategorias(-1)">
+                                Anterior
+                            </button>
+                            <span>
+                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
+                            </span>
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getCategorias(1)" class="paginate_button next" 
+                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-image-overlay></app-image-overlay>

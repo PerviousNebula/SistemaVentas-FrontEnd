@@ -1,0 +1,13 @@
+<div [ngClass]="imgOverlayService.oculto" class="modal animated fadeIn bs-example-modal-lg display-overlay" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myLargeModalLabel"></h4>
+                <button (click)="imgOverlayService.ocultarModal()" type="button" class="close cursor-pointer" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body text-center">
+                <img class="img img-responsive w-50" [src]="imgOverlayService.imgUrl | noImg" alt="profile-pic">
+            </div>
+        </div>
+    </div>
+</div>

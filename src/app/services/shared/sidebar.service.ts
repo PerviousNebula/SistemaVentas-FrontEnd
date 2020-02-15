@@ -45,6 +45,14 @@ export class SidebarService {
           { title: 'Ventas', url: '/sells' },
           { title: 'Clientes', url: '/clients' }
         ]
+      },
+      {
+        title: 'Mantenimiento',
+        icon: 'mdi mdi-treasure-chest',
+        subcategories: [
+          { title: 'Roles', url: '/roles' },
+          { title: 'Usuarios', url: '/users' }
+        ]
       }
     ];
   }

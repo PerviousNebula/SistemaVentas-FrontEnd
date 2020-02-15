@@ -11,6 +11,9 @@ import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { CategoriesComponent } from './categories/categories.component';
 import { ProductsComponent } from './products/products.component';
+import { RolesComponent } from './roles/roles.component';
+import { UsersComponent } from './users/users.component';
+import { UsersManagmentComponent } from './users-managment/users-managment.component';
 
 const ROUTES: Routes = [
     {
@@ -56,6 +59,21 @@ const ROUTES: Routes = [
                 path: 'products',
                 component: ProductsComponent,
                 data: { title: 'Artículos', desc: 'Artículos registrados por el usuario' }
+            },
+            {
+                path: 'roles',
+                component: RolesComponent,
+                data: { title: 'Roles', desc: 'Tipos de usuario del sistema' }
+            },
+            {
+                path: 'users',
+                component: UsersComponent,
+                data: { title: 'Usuarios', desc: 'Usuarios registrados en el sistema' }
+            },
+            {
+                path: 'users/:id',
+                component: UsersManagmentComponent,
+                data: { title: 'Usuarios', desc: 'Cree o edite usuarios en el sistema' }
             },
             {
                 path: '',
