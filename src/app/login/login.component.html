@@ -4,16 +4,19 @@
 <section id="wrapper" class="login-register login-sidebar" style="background-image:url(../assets/images/background/login-register.jpg);">
     <div class="login-box card">
         <div class="card-body">
-            <form (ngSubmit)="login()" class="form-horizontal form-material" id="loginform" novalidate>
+            <form (ngSubmit)="login()" [formGroup]="loginForm" class="form-horizontal form-material" id="loginform" novalidate>
                 <a href="javascript:void(0)" class="text-center db"><img src="../assets/images/logo.png" alt="Home" height="50" width="50" /><br /><img src="../assets/images/logo-text.png" alt="Home" /></a>
                 <div class="form-group m-t-40">
-                    <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" placeholder="Usuario">
+                    <div class="col-xs-12" [ngClass]="{'text-danger animated shake': loginForm.controls.email.errors && loginForm.controls.email.touched}">
+                        <input formControlName="email" class="form-control" type="text" placeholder="Usuario">
+                        <span *ngIf="loginForm.controls.email.errors?.required && loginForm.controls.email.touched">Este campo es obligatorio</span>
+                        <span *ngIf="loginForm.controls.email.errors?.email && loginForm.controls.email.touched">Esta no es una dirección de email válida</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-xs-12">
-                        <input class="form-control" type="password" required="" placeholder="Contraseña">
+                    <div class="col-xs-12" [ngClass]="{'text-danger animated shake': loginForm.controls.password.errors && loginForm.controls.password.touched}">
+                        <input formControlName="password" class="form-control" type="password" required="" placeholder="Contraseña">
+                        <span *ngIf="loginForm.controls.password.errors?.required && loginForm.controls.password.touched">Este campo es obligatorio</span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -28,7 +31,7 @@
                 </div>
                 <div class="form-group text-center m-t-20">
                     <div class="col-xs-12">
-                        <button class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Iniciar Sesión</button>
+                        <button [disabled]="loginForm.invalid" class="btn btn-info btn-lg btn-block text-uppercase btn-rounded" type="submit">Iniciar Sesión</button>
                     </div>
                 </div>
                 <div class="row">

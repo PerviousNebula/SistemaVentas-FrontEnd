@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 // Local Modules
 import { SharedModule } from '../shared/shared.module';
+import { PipesModule } from '../pipes/pipes.module';
 
 // Routes
 import { PAGES_ROUTES } from './pages.routes';
@@ -28,10 +29,9 @@ import { ProductsComponent } from './products/products.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsersComponent } from './users/users.component';
 import { UsersManagmentComponent } from './users-managment/users-managment.component';
-
-// Pipes
-import { NoImgPipe } from '../pipes/no-img.pipe';
 import { ImageOverlayComponent } from '../components/image-overlay/image-overlay.component';
+import { ClientsComponent } from './clients/clients.component';
+import { SupplierComponent } from './supplier/supplier.component';
 
 @NgModule({
     declarations: [
@@ -49,8 +49,9 @@ import { ImageOverlayComponent } from '../components/image-overlay/image-overlay
         ProductsComponent,
         RolesComponent,
         UsersComponent,
-        NoImgPipe,
-        UsersManagmentComponent
+        UsersManagmentComponent,
+        ClientsComponent,
+        SupplierComponent
     ],
     imports: [
         CommonModule,
@@ -59,7 +60,8 @@ import { ImageOverlayComponent } from '../components/image-overlay/image-overlay
         HttpClientModule,
         ChartsModule,
         PAGES_ROUTES,
-        SharedModule
+        SharedModule,
+        PipesModule
     ],
     exports: [
         PagesComponent,

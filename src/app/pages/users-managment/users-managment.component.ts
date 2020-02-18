@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Usuario } from '../../interfaces/interfaces.index';
 import Swal from 'sweetalert2';
 
 // RxJS
@@ -18,7 +19,9 @@ import * as usuariosActions from '../../store/actions';
   selector: 'app-users-managment',
   templateUrl: './users-managment.component.html'
 })
-export class UsersManagmentComponent implements OnInit {
+export class UsersManagmentComponent implements OnInit, OnDestroy {
+  private usuario: Usuario;
+  private routeParam: string;
   public loading: boolean;
   private subscription = new Subscription();
   public formUsuario: FormGroup;
@@ -29,64 +32,116 @@ export class UsersManagmentComponent implements OnInit {
               private ar: ActivatedRoute,
               private router: Router,
               private usersService: UsersService) {
+    // Se crea el formulario
+    this.formUsuario = new FormGroup({
+      idUsuario: new FormControl(0),
+      nombre: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl(''),
+      confirm_password: new FormControl(''),
+      direccion: new FormControl(''),
+      telefono: new FormControl('', [Validators.minLength(10)]),
+      tipo_documento: new FormControl(''),
+      num_documento: new FormControl(''),
+      idRol: new FormControl('', [Validators.required]),
+      imgUrl: new FormControl('./assets/images/users/rol.jpg'),
+      act_password: new FormControl(false)
+    });
+
+    // Leemos los parametros del URL para ver si es nuevo o edicion
     this.subscription.add(this.ar.params.subscribe(params => {
-      if (params.id === 'nuevo') {
-        this.getUserInfo();
+      this.routeParam = params.id;
+      if (params.id !== 'nuevo') {
+        this.store.dispatch(new usuariosActions.MostrarUsuarios(params.id));
       }
     }));
-    this.store.select('usuarios').subscribe(node => {
+
+    // Subscripcion al store con el nodo de usuarios
+    this.subscription.add(this.store.select('usuarios').subscribe(node => {
       this.loading = node.loading;
-      if (this.formUsuario) {
+      this.usuario = node.usuarios[0];
+
+      // Si se trata de un nuevo usuario se agrega la validación de required al campo password
+      if (this.routeParam === 'nuevo') {
+        this.formUsuario.controls.password.setValidators(Validators.required);
+        this.formUsuario.controls.confirm_password.setValidators(Validators.required);
+      }
+
+      // Se popula el formulario si se trata de una edición de usuario
+      if (this.usuario && this.routeParam !== 'nuevo') {
         this.formUsuario.patchValue({
-          nombre: 'Test',
-          email: 'test1@test.com',
-          password: '12345678',
-          confirm_password: '12345678',
-          direccion: 'Test 123',
-          telefono: '6641234567',
-          tipo_documento: 'Test',
-          num_documento: 'TEST123456',
-          idRol: '4',
-          imgUrl: './assets/images/users/rol.jpg'
+          idUsuario: +this.routeParam,
+          nombre: this.usuario.nombre,
+          email: this.usuario.email,
+          password: '',
+          confirm_password: '',
+          direccion: this.usuario.direccion,
+          telefono: this.usuario.telefono,
+          tipo_documento: this.usuario.tipo_documento,
+          num_documento: this.usuario.num_documento,
+          idRol: this.usuario.idRol,
+          imgUrl: this.usuario.imgUrl ? `http://localhost:5000${this.usuario.imgUrl}` : './assets/images/users/rol.jpg'
         });
       }
-    });
+    }));
   }
 
   ngOnInit() {
-    this.formUsuario = new FormGroup({
-      nombre: new FormControl('Test', [Validators.required]),
-      email: new FormControl('test1@test.com', [Validators.required, Validators.email]),
-      password: new FormControl('12345678', [Validators.required]),
-      confirm_password: new FormControl('12345678', [Validators.required]),
-      direccion: new FormControl('Test 123'),
-      telefono: new FormControl('6641234567', [Validators.minLength(10)]),
-      tipo_documento: new FormControl('Test'),
-      num_documento: new FormControl('TEST123456'),
-      idRol: new FormControl('4', [Validators.required]),
-      imgUrl: new FormControl('./assets/images/users/rol.jpg')
-    });
+    this.onFormChanges();
   }
 
-  private getUserInfo() {
-
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
-  public createUser() {
+  onFormChanges() {
+    this.subscription.add(this.formUsuario.controls.password.valueChanges.subscribe((value: string) => {
+      // Si el usuario escribio una nueva contraseña la confirmacion de la misma es obligatoria
+      if (value.length) {
+        this.formUsuario.controls.act_password.setValue(true);
+        this.formUsuario.controls.confirm_password.setValidators([Validators.required]);
+        this.formUsuario.controls.confirm_password.updateValueAndValidity();
+      } else {
+        // Si el usuario no actualizara su contraseña quitamos el validador de requerido
+        this.formUsuario.controls.act_password.setValue(false);
+        this.formUsuario.controls.confirm_password.setValidators([]);
+        this.formUsuario.controls.confirm_password.updateValueAndValidity();
+      }
+    }));
+  }
+
+  public guardarCambios() {
     // Se carga primero la imagen en el servidor siempre y cuando el formulario sea válido
     if (this.formUsuario.valid) {
-      if (this.profilePic) {
-        this.usersService.uploadProfilePic(this.profilePic).subscribe(resp => {
-          // Se actualiza la ruta real de la imagen de perfil en el formulario
-          this.formUsuario.controls.imgUrl.setValue(resp);
-          // Casteo el idRol a number
+      // Creación de un nuevo usuario
+      if (this.routeParam === 'nuevo') {
+        if (this.profilePic) {
+          this.usersService.uploadProfilePic(this.profilePic).subscribe(resp => {
+            // Se actualiza la ruta real de la imagen de perfil en el formulario
+            this.formUsuario.controls.imgUrl.setValue(resp);
+            // Casteo el idRol a number
+            this.formUsuario.controls.idRol.setValue(+this.formUsuario.controls.idRol.value);
+            this.store.dispatch(new usuariosActions.CrearUsuarios(this.formUsuario.value));
+          });
+        } else {
+          this.formUsuario.controls.imgUrl.setValue('');
           this.formUsuario.controls.idRol.setValue(+this.formUsuario.controls.idRol.value);
           this.store.dispatch(new usuariosActions.CrearUsuarios(this.formUsuario.value));
-        });
+        }
       } else {
-        this.formUsuario.controls.imgUrl.setValue('');
-        this.formUsuario.controls.idRol.setValue(+this.formUsuario.controls.idRol.value);
-        this.store.dispatch(new usuariosActions.CrearUsuarios(this.formUsuario.value));
+        // Edición de un usuario existente
+        if (this.profilePic) {
+          this.usersService.uploadProfilePic(this.profilePic).subscribe(resp => {
+            // Se actualiza la ruta real de la imagen de perfil en el formulario
+            this.formUsuario.controls.imgUrl.setValue(resp);
+            // Casteo el idRol a number
+            this.formUsuario.controls.idRol.setValue(+this.formUsuario.controls.idRol.value);
+            this.store.dispatch(new usuariosActions.EditarUsuarios(this.formUsuario.value));
+          });
+        } else {
+          this.formUsuario.controls.idRol.setValue(+this.formUsuario.controls.idRol.value);
+          this.store.dispatch(new usuariosActions.EditarUsuarios(this.formUsuario.value));
+        }
       }
     }
   }

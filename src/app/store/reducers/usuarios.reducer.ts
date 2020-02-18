@@ -52,9 +52,35 @@ export function usuariosReducer(state = estadoInicial, action: fromUsuarios.usua
             return {
                 ...state,
                 loaded: true,
-                loading: false
+                loading: false,
+                usuarios: [...action.payload.usuarios],
+                pagination: {...action.payload.pagination}
             };
         case fromUsuarios.CREAR_USUARIOS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.message,
+                    url: action.payload.url
+                }
+            };
+        case fromUsuarios.EDITAR_USUARIOS:
+            return {
+                ...state,
+                loading: true
+            };
+        case fromUsuarios.EDITAR_USUARIOS_SUCCESS:
+            return {
+                ...state,
+                loaded: true,
+                loading: false,
+                usuarios: [...action.payload.usuarios],
+                pagination: {...action.payload.pagination}
+            };
+        case fromUsuarios.EDITAR_USUARIOS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -75,9 +101,81 @@ export function usuariosReducer(state = estadoInicial, action: fromUsuarios.usua
                 ...state,
                 loaded: true,
                 loading: false,
-                usuarios: [...action.payload.usuario]
+                usuarios: [action.payload]
             };
         case fromUsuarios.MOSTRAR_USUARIOS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.message,
+                    url: action.payload.url
+                }
+            };
+        case fromUsuarios.FILTRAR_USUARIOS:
+            return {
+                ...state,
+                loading: true
+            };
+        case fromUsuarios.FILTRAR_USUARIOS_SUCCESS:
+            return {
+                ...state,
+                loaded: true,
+                loading: false,
+                usuarios: [...action.payload.usuarios],
+                pagination: {...action.payload.pagination}
+            };
+        case fromUsuarios.FILTRAR_USUARIOS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.message,
+                    url: action.payload.url
+                }
+            };
+        case fromUsuarios.ACTIVAR_USUARIOS:
+            return {
+                ...state,
+                loading: true
+            };
+        case fromUsuarios.ACTIVAR_USUARIOS_SUCCESS:
+            return {
+                ...state,
+                loaded: true,
+                loading: false,
+                usuarios: state.usuarios.map((usuario: Usuario) =>
+                    (usuario.idUsuario === action.payload) ? {...usuario, activo: true } : { ...usuario })
+            };
+        case fromUsuarios.ACTIVAR_USUARIOS_FAIL:
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.message,
+                    url: action.payload.url
+                }
+            };
+        case fromUsuarios.DESACTIVAR_USUARIOS:
+            return {
+                ...state,
+                loading: true
+            };
+        case fromUsuarios.DESACTIVAR_USUARIOS_SUCCESS:
+            return {
+                ...state,
+                loaded: true,
+                loading: false,
+                usuarios: state.usuarios.map((usuario: Usuario) =>
+                    (usuario.idUsuario === action.payload) ? {...usuario, activo: false } : { ...usuario })
+            };
+        case fromUsuarios.DESACTIVAR_USUARIOS_FAIL:
             return {
                 ...state,
                 loading: false,

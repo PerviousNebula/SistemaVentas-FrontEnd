@@ -6,11 +6,15 @@ export interface AppState {
     articulos: reducers.ArticulosState;
     roles: reducers.RolesState;
     usuarios: reducers.UsuariosState;
+    clientes: reducers.ClientesState;
+    proveedores: reducers.ProveedoresState;
 }
 
 export const appReducers: ActionReducerMap<AppState> = {
     categorias: reducers.categoriasReducer,
     articulos: reducers.articulosReducer,
     roles: reducers.rolesReducer,
-    usuarios: reducers.usuariosReducer
+    usuarios: reducers.usuariosReducer,
+    clientes: reducers.clientesReducer,
+    proveedores: reducers.proveedoresReducer
 };

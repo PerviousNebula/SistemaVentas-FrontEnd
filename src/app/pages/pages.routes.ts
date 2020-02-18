@@ -1,6 +1,9 @@
 // Modules
 import { RouterModule, Routes } from '@angular/router';
 
+// Guards
+import { LoginGuard } from '../guards/login.guard';
+
 // Components
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -14,11 +17,14 @@ import { ProductsComponent } from './products/products.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsersComponent } from './users/users.component';
 import { UsersManagmentComponent } from './users-managment/users-managment.component';
+import { ClientsComponent } from './clients/clients.component';
+import { SupplierComponent } from './supplier/supplier.component';
 
 const ROUTES: Routes = [
     {
         path: '',
         component: PagesComponent,
+        canActivate: [LoginGuard],
         children: [
             {
                 path: 'dashboard',
@@ -74,6 +80,16 @@ const ROUTES: Routes = [
                 path: 'users/:id',
                 component: UsersManagmentComponent,
                 data: { title: 'Usuarios', desc: 'Cree o edite usuarios en el sistema' }
+            },
+            {
+                path: 'clients',
+                component: ClientsComponent,
+                data: { title: 'Clientes', desc: 'Cree o edite sus clientes en el sistema' }
+            },
+            {
+                path: 'suppliers',
+                component: SupplierComponent,
+                data: { title: 'Proveedores', desc: 'Cree o edite sus proveedores en el sistema' }
             },
             {
                 path: '',

@@ -1,5 +1,5 @@
 <div class="row animated fadeIn">
-    <div class="col-12">
+    <div *ngIf="!loading" class="col-12">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Filtra fácilmente los usuarios registrados en el sistema</h4>
@@ -42,9 +42,9 @@
                                         <span *ngIf="!usuario.activo" class="badge badge-danger">INACTIVO</span>
                                     </td>
                                     <td class="align-middle">
-                                        <button class="btn btn-sm btn-info mr-1"><i class="fa fa-edit"></i></button>
-                                        <button *ngIf="usuario.activo" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                        <button *ngIf="!usuario.activo" class="btn btn-sm btn-info"><i class="fa fa-undo"></i></button>
+                                        <button [routerLink]="['/users', usuario.idUsuario]" class="btn btn-sm btn-info mr-1"><i class="fa fa-edit"></i></button>
+                                        <button *ngIf="usuario.activo" class="btn btn-sm btn-danger" (click)="desactivarUsuario(usuario)"><i class="fa fa-trash"></i></button>
+                                        <button *ngIf="!usuario.activo" class="btn btn-sm btn-info" (click)="activarUsuario(usuario)"><i class="fa fa-undo"></i></button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -54,13 +54,13 @@
                         </div>
                         <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
                             <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getCategorias(-1)">
+                                    tabindex="0" id="example_previous" (click)="getUsuarios(-1)">
                                 Anterior
                             </button>
                             <span>
                                 <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
                             </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getCategorias(1)" class="paginate_button next" 
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getUsuarios(1)" class="paginate_button next" 
                                     aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
                                 Siguiente
                             </button>
@@ -69,6 +69,11 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div *ngIf="loading" class="card-body text-center">
+        <i class="fa fa-spinner fa-spin fa-4x"></i>
+        <br>
+        <span>Cargando usuarios...</span>
     </div>
 </div>
 <app-image-overlay></app-image-overlay>

@@ -12,4 +12,5 @@ export interface Usuario {
     password_hash: string;
     imgUrl: string;
     activo: boolean;
+    act_password: boolean;
 }

@@ -35,7 +35,7 @@ export class SidebarService {
         icon: 'mdi mdi-cart-outline',
         subcategories: [
           { title: 'Ingresos', url: '/incomes' },
-          { title: 'Proveedores', url: '/providers' }
+          { title: 'Proveedores', url: '/suppliers' }
         ]
       },
       {

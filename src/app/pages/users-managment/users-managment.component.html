@@ -11,7 +11,7 @@
                                 <img (click)="selectImg()" class="img img-thumbnail cursor-pointer" [src]="formUsuario.controls['imgUrl'].value" />
                             </div>
                             <div class="col-sm-12 col-lg-8">
-                                <form (ngSubmit)="createUser()" [formGroup]="formUsuario" class="form-horizontal form-material">
+                                <form (ngSubmit)="guardarCambios()" [formGroup]="formUsuario" class="form-horizontal form-material">
                                     <div class="form-group" [ngClass]="{'text-danger animated shake': formUsuario.controls['nombre'].errors && formUsuario.controls['nombre'].touched}">
                                         <label class="col-md-12">Nombre <span class="text-danger"> *</span></label>
                                         <div class="col-md-12">
@@ -30,7 +30,8 @@
                                     <div class="form-group">
                                         <div class="row">
                                             <div class="col-md-6" [ngClass]="{'text-danger animated shake': formUsuario.controls['password'].errors && formUsuario.controls['password'].touched}">
-                                                <label class="col-md-6">Contraseña <span class="text-danger"> *</span></label>
+                                                <label *ngIf="routeParam === 'nuevo'" class="col-md-6">Contraseña <span class="text-danger"> *</span></label>
+                                                <label *ngIf="routeParam !== 'nuevo'" class="col-md-6">Actualizar contraseña</label>
                                                 <input formControlName="password" type="password" placeholder="Password del usuario" class="ml-3 form-control form-control-line">
                                                 <span class="ml-3" *ngIf="formUsuario.controls['password'].errors?.required && formUsuario.controls['password'].touched">Este campo es obligatorio</span>
                                             </div>

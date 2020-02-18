@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+// Services
+import { UsersService } from '../services/users.service';
+import { Subscription } from 'rxjs';
 
 declare function init_plugins();
 
@@ -8,17 +12,30 @@ declare function init_plugins();
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  public loginForm: FormGroup;
+  private subscription = new Subscription();
 
-  constructor(private router:Router) {
+  constructor(private usersService: UsersService) {
   }
 
   ngOnInit() {
     init_plugins();
+    this.loginForm = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [Validators.required])
+    });
   }
 
-  public login():void {
-    this.router.navigate(['/dashboard']);
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  public login() {
+    if (this.loginForm.valid) {
+      this.subscription.add(this.usersService.login(this.loginForm.controls.email.value, this.loginForm.controls.password.value)
+                                             .subscribe());
+    }
   }
 
 }
