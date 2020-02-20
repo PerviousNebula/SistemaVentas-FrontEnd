@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 // Services
 import { SidebarService } from 'src/app/services/service.index';
-import { UsersService } from '../../services/users.service';
+import { UsersService } from '../../services/pages/users/users.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,6 +14,7 @@ export class SidebarComponent implements OnInit {
               public usersService: UsersService) { }
 
   ngOnInit() {
+    this._sidebar.loadMenu();
   }
 
 }

@@ -1,29 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { Rol } from '../interfaces/interfaces.index';
-import Swal from 'sweetalert2';
+import { Rol } from '../../../interfaces/interfaces.index';
 
 // RxJS
 import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+
+// Services
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private  errorHandlerService: ErrorHandlerService) { }
 
   public getRoles() {
     return this.http.get<Rol[]>(`${environment.url}/roles/listar`)
                     .pipe(
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
-  private errorHandler(error: HttpErrorResponse) {
-    Swal.fire(`Error ${error.status}`, error.message, 'error');
-    return throwError(error || 'Error en el servidor, intente más tarde');
-  }
 }

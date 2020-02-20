@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-
-// Interfaces
-import { Category } from 'src/app/interfaces/interfaces.index';
+import { CanActivate } from '@angular/router';
 
 // Services
 import { UsersService } from '../pages/users/users.service';
@@ -9,12 +7,10 @@ import { UsersService } from '../pages/users/users.service';
 @Injectable({
   providedIn: 'root'
 })
-export class SidebarService {
-  menu: Category[] = [];
+export class VendedorGuard implements CanActivate {
 
   constructor(private usersService: UsersService) { }
 
-  loadMenu() {
-    this.menu = this.usersService.menu;
-  }
+  canActivate() { return this.usersService.isAdmin() || this.usersService.isVendedor(); }
+
 }

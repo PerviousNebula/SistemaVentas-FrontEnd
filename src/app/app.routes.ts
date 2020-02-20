@@ -1,13 +1,11 @@
-//Modules
-import { RouterModule, Routes } from "@angular/router";
+// Modules
+import { RouterModule, Routes } from '@angular/router';
 
-//Components
+// Components
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './login/register.component';
 
-const ROUTES:Routes = [
-    { path: 'login', component: LoginComponent },
-    { path: 'register', component: RegisterComponent }
+const ROUTES: Routes = [
+    { path: 'login', component: LoginComponent }
 ];
 
 export const APP_ROUTES = RouterModule.forRoot(ROUTES, {useHash: true});

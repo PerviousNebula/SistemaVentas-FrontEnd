@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 // RxJS
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
-import { Persona } from '../interfaces/interfaces.index';
+import { Persona } from '../../../interfaces/interfaces.index';
+
+// Services
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SuppliersService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private errorHandlerService: ErrorHandlerService) { }
 
   public getProveedores(pageNumber: number = 1, pageSize: number = 10) {
     return this.http.get(`${environment.url}/Personas/ListarProveedores?pageNumber=${pageNumber}&pageSize=${pageSize}`,
                          {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ proveedores: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -31,7 +34,7 @@ export class SuppliersService {
                         Swal.fire('Proveedor creado', 'El proveedor ha sido agregado', 'success');
                         return { proveedores: resp.body.personas, pagination: JSON.parse(resp.headers.get('X-Pagination')) };
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -42,7 +45,7 @@ export class SuppliersService {
                         Swal.fire('Proveedor actualizado', 'El proveedor ha sido actualizado', 'success');
                         return { proveedores: resp.body.personas, pagination: JSON.parse(resp.headers.get('X-Pagination')) };
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -51,12 +54,8 @@ export class SuppliersService {
                          {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ proveedores: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
-  private errorHandler(error: HttpErrorResponse) {
-    Swal.fire(`Error ${error.status}`, error.message, 'error');
-    return throwError(error || 'Error del servidor, intente más tarde');
-  }
 }

@@ -12,7 +12,7 @@
                         <img [src]="usersService.usuario.imgUrl | noImg" alt="user" />
                         <span class="hide-menu">{{ usersService.usuario.nombre }}</span></a>
                     <ul aria-expanded="false" class="collapse">
-                        <li><a href="javascript:void()">Mi Perfil </a></li>
+                        <li><a [routerLink]="['/users', usersService.usuario.idUsuario]" routerLinkActive="active">Mi Perfil </a></li>
                         <li><a [routerLink]="['/account-settings']" routerLinkActive="active">Ajustes del Sistema</a></li>
                         <li><a class="cursor-pointer" (click)="usersService.logout()">Cerrar Sesión</a></li>
                     </ul>

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 // Services
-import { UsersService } from '../services/users.service';
+import { UsersService } from '../services/pages/users/users.service';
 import { Subscription } from 'rxjs';
 
 declare function init_plugins();

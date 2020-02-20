@@ -1,26 +1,29 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 import { map, catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
 
 // Interfaces
-import { Articulo } from '../interfaces/interfaces.index';
+import { Articulo } from '../../../interfaces/interfaces.index';
 import Swal from 'sweetalert2';
+
+// Services
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private errorHandlerService: ErrorHandlerService) { }
 
   public getArticulos(pageNumber: number = 1) {
     return this.http.get<Articulo>(`${environment.url}/articulos/listar?pageNumber=${pageNumber}&pageSize=10`, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -34,7 +37,7 @@ export class ProductsService {
                           pagination: JSON.parse(resp.headers.get('X-Paginastion'))
                         };
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -45,7 +48,7 @@ export class ProductsService {
                         Swal.fire('Editar artículo', 'Su artículo ha sido editado!', 'success');
                         return {articulos: resp.body.articulos, pagination: JSON.parse(resp.headers.get('X-Pagination'))};
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -53,7 +56,7 @@ export class ProductsService {
     return this.http.put<Articulo[]>(`${environment.url}/articulos/activar/${idArticulo}`, {})
                     .pipe(
                       map(() => Swal.fire('Activar artículo', 'Su artículo ha sido activado!', 'success')),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -61,7 +64,7 @@ export class ProductsService {
     return this.http.put<Articulo[]>(`${environment.url}/articulos/desactivar/${idArticulo}`, {})
                     .pipe(
                       map(() => Swal.fire('Desactivar artículo', 'Su artículo ha sido desactivado!', 'success')),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -70,12 +73,8 @@ export class ProductsService {
                                      {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
-
-  private errorHandler(error: HttpErrorResponse) {
-    Swal.fire(`Error ${error.status}`, error.message, 'error');
-    return throwError(error || 'Error del servidor, intente más tarde');
-  }
+  
 }

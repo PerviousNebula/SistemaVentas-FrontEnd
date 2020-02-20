@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/internal/operators/map';
 
 // Interfaces
-import { Categoria } from '../interfaces/pages/categoria';
+import { Categoria } from '../../../interfaces/interfaces.index';
+
+// Services
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 // Enviroments
 import { environment } from 'src/environments/environment';
@@ -16,14 +18,15 @@ import Swal from 'sweetalert2';
 })
 export class CategoriesService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private errorHandlerService: ErrorHandlerService) { }
 
   public getCategorias(pageNumber: number = 1, pageSize: number = 10) {
     return this.http.get<Categoria>(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${pageSize}`,
                                     {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -37,7 +40,7 @@ export class CategoriesService {
                           pagination: JSON.parse(resp.headers.get('X-Pagination'))
                         };
                       }),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -48,7 +51,7 @@ export class CategoriesService {
                         Swal.fire('Editar categoría', 'Su categoría ha sido editada!', 'success');
                         return { categorias: resp.body.categorias, pagination: JSON.parse(resp.headers.get('X-Pagination')) };
                       }),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -56,7 +59,7 @@ export class CategoriesService {
     return this.http.put(`${environment.url}/categorias/activar/${idCategoria}`, {})
                     .pipe(
                       map(() => Swal.fire('Activar categoría', 'Su categoría ha sido activada!', 'success')),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -64,7 +67,7 @@ export class CategoriesService {
     return this.http.put(`${environment.url}/categorias/desactivar/${idCategoria}`, {})
                     .pipe(
                       map(() => Swal.fire('Desactivar categoría', 'Su categoría ha sido desactivada!', 'success')),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -72,13 +75,7 @@ export class CategoriesService {
     return this.http.get(`${environment.url}/categorias/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${10}`, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
-                      catchError((error: any) => this.errorHandler(error))
+                      catchError((error: any) => this.errorHandlerService.showError(error))
                     );
   }
-
-  private errorHandler(error: HttpErrorResponse) {
-    Swal.fire(`Error ${error.status}`, error.message, 'error');
-    return throwError(error || 'Error del servidor, intente más tarde');
-  }
-
 }

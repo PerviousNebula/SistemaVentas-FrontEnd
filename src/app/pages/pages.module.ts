@@ -18,13 +18,10 @@ import { CategoriesComponent } from './categories/categories.component';
 // Components
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
-import { ProgressComponent } from '../pages/progress/progress.component';
 import { Graficas1Component } from '../pages/graficas1/graficas1.component';
 import { IncrementadorComponent } from '../components/incrementador/incrementador.component';
 import { GraficoDonaComponent } from '../components/grafico-dona/grafico-dona.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { PromesasComponent } from './promesas/promesas.component';
-import { RxjsComponent } from './rxjs/rxjs.component';
 import { ProductsComponent } from './products/products.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsersComponent } from './users/users.component';
@@ -37,14 +34,11 @@ import { SupplierComponent } from './supplier/supplier.component';
     declarations: [
         PagesComponent,
         DashboardComponent,
-        ProgressComponent,
         Graficas1Component,
         IncrementadorComponent,
         GraficoDonaComponent,
         ImageOverlayComponent,
         AccountSettingsComponent,
-        PromesasComponent,
-        RxjsComponent,
         CategoriesComponent,
         ProductsComponent,
         RolesComponent,
@@ -66,7 +60,6 @@ import { SupplierComponent } from './supplier/supplier.component';
     exports: [
         PagesComponent,
         DashboardComponent,
-        ProgressComponent,
         Graficas1Component
     ],
     providers: [],

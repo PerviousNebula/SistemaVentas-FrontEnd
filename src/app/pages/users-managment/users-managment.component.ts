@@ -8,7 +8,7 @@ import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
 // Services
-import { UsersService } from '../../services/users.service';
+import { UsersService } from '../../services/pages/users/users.service';
 
 // NGRX
 import { Store } from '@ngrx/store';

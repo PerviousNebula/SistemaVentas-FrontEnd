@@ -4,7 +4,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 // Services
-import { UsersService } from '../../services/users.service';
+import { UsersService } from '../../services/pages/users/users.service';
 
 // NGRX
 import { Actions, Effect, ofType } from '@ngrx/effects';

@@ -1,16 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as jwt_decode from 'jwt-decode';
-
 import Swal from 'sweetalert2';
 
-import { Usuario } from '../interfaces/interfaces.index';
+// Interfaces
+import { Usuario, Category } from '../../../interfaces/interfaces.index';
 
 // RxJS
-import { throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+
+// Services
+import { ErrorHandlerService } from '../../shared/error-handler.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,8 +20,9 @@ import { Router } from '@angular/router';
 export class UsersService {
   public token: string;
   public usuario: Usuario;
+  public menu: Category[];
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private errorHandlerService: ErrorHandlerService) {
     this.loadFromStorage();
   }
 
@@ -27,39 +30,57 @@ export class UsersService {
     return this.token.length;
   }
 
+  public isAdmin() {
+    return this.usuario.rol === 'Administrador';
+  }
+
+  public isAlmacenero() {
+    return this.usuario.rol === 'Almacenero';
+  }
+
+  public isVendedor() {
+    return this.usuario.rol === 'Vendedor';
+  }
+
   public loadFromStorage() {
     if (localStorage.getItem('token')) {
       this.token = localStorage.getItem('token');
       this.usuario = jwt_decode(this.token);
+      this.menu = JSON.parse(localStorage.getItem('menu'));
     } else {
       this.token = '';
       this.usuario = null;
+      this.menu = [];
     }
   }
 
-  public saveInTheStorage(token: string) {
+  public saveInTheStorage(token: string, menu: Category[]) {
     localStorage.setItem('token', token);
     localStorage.setItem('usuario', JSON.stringify(jwt_decode(token)));
+    localStorage.setItem('menu', JSON.stringify(menu));
     this.token = token;
     this.usuario = jwt_decode(token);
+    this.menu = menu;
   }
 
   public login(email: string, password: string) {
     return this.http.post(`${environment.url}/usuarios/login`, { email, password })
              .pipe(
                map((resp: any) => {
-                 this.saveInTheStorage(resp.token);
+                 this.saveInTheStorage(resp.token, resp.menu);
                  this.router.navigateByUrl('/dashboard');
                }),
-               catchError(error => this.errorHandler(error))
+               catchError(error => this.errorHandlerService.showError(error))
              );
   }
 
   public logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('usuario');
+    localStorage.removeItem('menu');
     this.token = '';
     this.usuario = null;
+    this.menu = [];
     this.router.navigateByUrl('/login');
   }
 
@@ -68,7 +89,7 @@ export class UsersService {
                                     {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ usuarios: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))}),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     ));
   }
 
@@ -83,7 +104,7 @@ export class UsersService {
                         Swal.fire('Usuario creado', 'El usuario ha sido agregado', 'success');
                         return { usuarios: resp.usuarios, pagination: JSON.parse(resp.headers.get('X-Pagination')) };
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -95,7 +116,7 @@ export class UsersService {
                         this.router.navigateByUrl('/users');
                         return {usuarios: resp.body.usuarios, pagination: JSON.parse(resp.headers.get('X-Pagination'))};
                       }),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -109,7 +130,7 @@ export class UsersService {
     return this.http.post<string>(`${environment.url}/usuarios/UploadProfilePic`, formData, { headers })
                     .pipe(
                       map((resp: any) => resp.imgUrl),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -117,7 +138,7 @@ export class UsersService {
     return this.http.get(`${environment.url}/usuarios/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ usuarios: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -125,7 +146,7 @@ export class UsersService {
     return this.http.put(`${environment.url}/usuarios/activar/${idUsuario}`, {})
                     .pipe(
                       map(() => Swal.fire('Activar usuario', 'El usuario ha sido activado!', 'success')),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
   }
 
@@ -133,13 +154,8 @@ export class UsersService {
     return this.http.put(`${environment.url}/usuarios/desactivar/${idUsuario}`, {})
                     .pipe(
                       map(() => Swal.fire('Desactivar usuario', 'El usuario ha sido desactivado!', 'success')),
-                      catchError(error => this.errorHandler(error))
+                      catchError(error => this.errorHandlerService.showError(error))
                     );
-  }
-
-  private errorHandler(error: HttpErrorResponse) {
-    Swal.fire(`Error ${error.status}`, error.message, 'error');
-    return throwError(error || 'Error en el servidor, intente más tarde');
   }
 
 }

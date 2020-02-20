@@ -3,7 +3,7 @@ import { switchMap, catchError, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 // Services
-import { ProductsService } from '../../services/products.service';
+import { ProductsService } from '../../services/pages/products/products.service';
 
 // NGRX
 import { Actions, Effect, ofType } from '@ngrx/effects';

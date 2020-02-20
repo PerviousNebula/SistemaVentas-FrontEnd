@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SuppliersService } from '../../services/suppliers.service';
+import { SuppliersService } from '../../services/pages/suppliers/suppliers.service';
 import { switchMap, map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 

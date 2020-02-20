@@ -2,6 +2,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+// Envrioments
 import { environment } from 'src/environments/environment';
 
 // NGRX
@@ -21,13 +23,11 @@ import { APP_ROUTES } from './app.routes';
 // Components
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './login/register.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +43,6 @@ import { RegisterComponent } from './login/register.component';
     ServiceModule,
     APP_ROUTES
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
