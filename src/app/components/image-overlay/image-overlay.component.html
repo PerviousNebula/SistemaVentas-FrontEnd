@@ -5,8 +5,86 @@
                 <h4 class="modal-title" id="myLargeModalLabel"></h4>
                 <button (click)="imgOverlayService.ocultarModal()" type="button" class="close cursor-pointer" aria-hidden="true">×</button>
             </div>
-            <div class="modal-body text-center">
-                <img class="img img-responsive w-50" [src]="imgOverlayService.imgUrl | noImg" alt="profile-pic">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 input-group">
+                        <input #filter class="form-control form-control-line" type="text" placeholder="Nombre del artículo" (keyup.Enter)="filtrarArticulos(filter.value)" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="button" (click)="filtrarArticulos(filter.value)">Buscar</button>
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                            <thead>
+                                <tr role="row">
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Artículo</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Categoría</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descripción</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Stock</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngIf="!loading; else isLoading">
+                                    <ng-container *ngIf="articulos.length; else noRecords">
+                                        <tr *ngFor="let articulo of articulos">
+                                            <td class="text-center">
+                                                <input class="checkbox-correction" [checked]="articuloYaAgregado(articulo)" type="checkbox" (change)="revisarArticulos($event.target.checked, articulo)"/>
+                                            </td>
+                                            <td>{{ articulo.nombre }}</td>
+                                            <td>{{ articulo.categoria }}</td>
+                                            <td>{{ articulo.descripcion }}</td>
+                                            <td>{{ articulo.stock }}</td>
+                                            <td>{{ articulo.precio_venta | currency }}</td>
+                                        </tr>
+                                    </ng-container>
+                                </ng-container>
+                                <ng-template #isLoading>
+                                    <tr>
+                                        <td colspan="6">
+                                            <span>
+                                                <i class="fa fa-spinner fa-spin fa-2x"></i>
+                                                Cargando articulos...
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template #noRecords>
+                                    <tr><td class="text-center" colspan="6"><h4>No hay registros que mostrar...</h4></td></tr>
+                                </ng-template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-6">
+                        <div *ngIf="pagination" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
+                            Mostrando {{ pagination.CurrentPage * pagination.PageSize - (pagination.PageSize - 1) }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-6 text-right">
+                        <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
+                            <button [ngClass]="{'disabled': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="btn btn-sm btn-primary" aria-controls="example" data-dt-idx="0" 
+                                    tabindex="0" id="example_previous" (click)="filtrarArticulos(filter.value, -1)">
+                                Anterior
+                            </button>
+                            <span>
+                                <a class="ml-1 mr-1" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
+                            </span>
+                            <button [ngClass]="{'disabled': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="filtrarArticulos(filter.value, 1)" class="btn btn-sm btn-primary" 
+                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
+                                Siguiente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" (click)="imgOverlayService.ocultarModal()">Cancelar</button>
+                <button class="btn btn-success" (click)="agregarArticulos()">Agregar</button>
             </div>
         </div>
     </div>

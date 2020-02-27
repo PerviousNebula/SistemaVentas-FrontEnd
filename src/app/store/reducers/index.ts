@@ -4,3 +4,4 @@ export * from './roles.reducer';
 export * from './usuarios.reducer';
 export * from './clientes.reducer';
 export * from './proveedores.reducer';
+export * from './ingresos.reducer';

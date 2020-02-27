@@ -8,7 +8,6 @@ import { ProductsService } from '../../services/pages/products/products.service'
 // NGRX
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as articulosActions from '../actions';
-import { Articulo } from 'src/app/interfaces/interfaces.index';
 
 @Injectable()
 export class ArticulosEffects {
@@ -59,7 +58,7 @@ export class ArticulosEffects {
     filtrarArticulos$ = this.actions$.pipe(
         ofType(articulosActions.FILTRAR_ARTICULOS),
         switchMap((action: articulosActions.FiltrarArticulos) => {
-            return this.articulosService.filterArticulos(action.payload.hint, action.payload.page).pipe(
+            return this.articulosService.filterArticulos(action.payload.hint, action.payload.page, action.payload.pageSize).pipe(
                 map((resp: any) => new articulosActions.FiltrarArticulosSuccess(
                         { articulos: resp.articulos, pagination: resp.pagination })
                     ),

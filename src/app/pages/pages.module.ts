@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChartsModule } from 'ng2-charts';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Local Modules
 import { SharedModule } from '../shared/shared.module';
@@ -14,6 +14,9 @@ import { PAGES_ROUTES } from './pages.routes';
 
 // Shared Components
 import { CategoriesComponent } from './categories/categories.component';
+
+// Interceptors
+import { TokenInterceptorService } from '../services/interceptors/token-interceptor.service';
 
 // Components
 import { PagesComponent } from './pages.component';
@@ -29,6 +32,8 @@ import { UsersManagmentComponent } from './users-managment/users-managment.compo
 import { ImageOverlayComponent } from '../components/image-overlay/image-overlay.component';
 import { ClientsComponent } from './clients/clients.component';
 import { SupplierComponent } from './supplier/supplier.component';
+import { IncomesComponent } from './incomes/incomes.component';
+import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
 
 @NgModule({
     declarations: [
@@ -45,7 +50,9 @@ import { SupplierComponent } from './supplier/supplier.component';
         UsersComponent,
         UsersManagmentComponent,
         ClientsComponent,
-        SupplierComponent
+        SupplierComponent,
+        IncomesComponent,
+        IncomesManagementComponent
     ],
     imports: [
         CommonModule,
@@ -62,6 +69,12 @@ import { SupplierComponent } from './supplier/supplier.component';
         DashboardComponent,
         Graficas1Component
     ],
-    providers: [],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptorService,
+            multi: true
+        }
+    ],
 })
 export class PagesModule {}

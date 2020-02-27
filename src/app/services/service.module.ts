@@ -8,6 +8,7 @@ import {
   RolesService,
   SuppliersService,
   UsersService,
+  IncomesService,
   SettingsService,
   SidebarService,
   SharedService
@@ -21,6 +22,7 @@ import {
     RolesService,
     SuppliersService,
     UsersService,
+    IncomesService,
     SettingsService,
     SharedService,
     SidebarService

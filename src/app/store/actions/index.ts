@@ -4,3 +4,4 @@ export * from './roles.actions';
 export * from './usuarios.actions';
 export * from './clientes.actions';
 export * from './proveedores.actions';
+export * from './ingresos.actions';

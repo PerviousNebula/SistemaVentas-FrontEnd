@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginGuard } from '../services/guards/login.guard';
 import { AdminGuard } from '../services/guards/admin.guard';
 import { AlmaceneroGuard } from '../services/guards/almacenero.guard';
+import { VendedorGuard } from '../services/guards/vendedor.guard';
 import { EditUserGuard } from '../services/guards/edit-user.guard';
 
 // Components
@@ -19,7 +20,8 @@ import { UsersComponent } from './users/users.component';
 import { UsersManagmentComponent } from './users-managment/users-managment.component';
 import { ClientsComponent } from './clients/clients.component';
 import { SupplierComponent } from './supplier/supplier.component';
-import { VendedorGuard } from '../services/guards/vendedor.guard';
+import { IncomesComponent } from './incomes/incomes.component';
+import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
 
 const ROUTES: Routes = [
     {
@@ -83,6 +85,18 @@ const ROUTES: Routes = [
                 component: SupplierComponent,
                 canActivate: [AlmaceneroGuard],
                 data: { title: 'Proveedores', desc: 'Cree o edite sus proveedores en el sistema' }
+            },
+            {
+                path: 'incomes',
+                component: IncomesComponent,
+                canActivate: [AlmaceneroGuard],
+                data: { title: 'Ingresos', desc: 'Cree o edite sus ingresos en el sistema' }
+            },
+            {
+                path: 'incomes/:id',
+                component: IncomesManagementComponent,
+                canActivate: [AlmaceneroGuard],
+                data: { title: 'Ingresos', desc: 'Cree o edite sus ingresos en el sistema' }
             },
             {
                 path: '',

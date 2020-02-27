@@ -17,7 +17,7 @@ export class ProveedoresEffects {
     cargarProveedores = this.actions$.pipe(
         ofType(proveedoresActions.CARGAR_PROVEEDORES),
         switchMap((action: proveedoresActions.CargarProveedores) => {
-            return this.proveedoresService.getProveedores(action.payload).pipe(
+            return this.proveedoresService.getProveedores(action.payload.pageNumber, action.payload.pageSize).pipe(
                 map((resp: any) => new proveedoresActions.CargarProveedoresSuccess({
                     proveedores: resp.proveedores,
                     pagination: resp.pagination

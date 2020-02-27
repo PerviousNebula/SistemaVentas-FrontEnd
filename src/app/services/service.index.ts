@@ -5,6 +5,8 @@ export { ProductsService } from './pages/products/products.service';
 export { RolesService } from './pages/roles/roles.service';
 export { SuppliersService } from './pages/suppliers/suppliers.service';
 export { UsersService } from './pages/users/users.service';
+export { IncomesService } from './pages/incomes/incomes.service';
+
 
 // Settings
 export { SettingsService } from './settings/settings.service';

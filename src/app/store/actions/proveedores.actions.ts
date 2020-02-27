@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-export const CARGAR_PROVEEDORES = '[Proveedores] Cargar proveedore';
+export const CARGAR_PROVEEDORES = '[Proveedores] Cargar proveedores';
 export const CARGAR_PROVEEDORES_FAIL = '[Proveedores] Cargar proveedores FAIL';
 export const CARGAR_PROVEEDORES_SUCCESS = '[Proveedores] Cargar proveedores SUCCESS';
 

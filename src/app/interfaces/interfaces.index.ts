@@ -4,6 +4,9 @@ export { Articulo } from './pages/articulo';
 export { Rol } from './pages/rol';
 export { Usuario } from './pages/usuario';
 export { Persona } from './pages/persona';
+export { Ingreso } from './pages/ingreso';
+export { DetalleIngreso } from './pages/detalleIngreso';
+
 
 // Settings
 export { Settings } from './settings/settings';

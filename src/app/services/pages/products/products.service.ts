@@ -19,8 +19,9 @@ export class ProductsService {
   constructor(private http: HttpClient,
               private errorHandlerService: ErrorHandlerService) { }
 
-  public getArticulos(pageNumber: number = 1) {
-    return this.http.get<Articulo>(`${environment.url}/articulos/listar?pageNumber=${pageNumber}&pageSize=10`, {observe: 'response'})
+  public getArticulos(pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get<Articulo>(`${environment.url}/articulos/listar?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError((error: any) => this.errorHandlerService.showError(error))
@@ -68,13 +69,19 @@ export class ProductsService {
                     );
   }
 
-  public filterArticulos(hint: string, pageNumber: number = 1) {
-    return this.http.get<Articulo[]>(`${environment.url}/articulos/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=10`,
+  public filterArticulos(hint: string, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get<Articulo[]>(`${environment.url}/articulos/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
                                      {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
                       catchError(error => this.errorHandlerService.showError(error))
                     );
   }
-  
+
+  public filterArticuloByCode(code: string) {
+    return this.http.get<Articulo>(`${environment.url}/Articulos/BuscarCodigoIngreso/${code}`)
+             .pipe(
+               catchError(error => this.errorHandlerService.showError(error))
+             );
+    }
 }
