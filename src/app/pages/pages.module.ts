@@ -34,6 +34,8 @@ import { ClientsComponent } from './clients/clients.component';
 import { SupplierComponent } from './supplier/supplier.component';
 import { IncomesComponent } from './incomes/incomes.component';
 import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
+import { SellsComponent } from './sells/sells.component';
+import { SellsManagementComponent } from './sells-management/sells-management.component';
 
 @NgModule({
     declarations: [
@@ -52,7 +54,9 @@ import { IncomesManagementComponent } from './incomes-management/incomes-managem
         ClientsComponent,
         SupplierComponent,
         IncomesComponent,
-        IncomesManagementComponent
+        IncomesManagementComponent,
+        SellsComponent,
+        SellsManagementComponent
     ],
     imports: [
         CommonModule,

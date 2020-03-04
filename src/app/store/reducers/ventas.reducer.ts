@@ -1,38 +1,38 @@
-import { Ingreso, Pagination } from 'src/app/interfaces/interfaces.index';
-import * as fromIngresos from '../actions';
+import { Venta, Pagination } from 'src/app/interfaces/interfaces.index';
+import * as fromVentas from '../actions';
 
-export interface IngresosState {
-    ingresos: Ingreso[];
+export interface VentasState {
+    ventas: Venta[];
     pagination: Pagination;
     loaded: boolean;
     loading: boolean;
     error: any;
 }
 
-const estadoInicial: IngresosState = {
-    ingresos: [],
+const estadoInicial: VentasState = {
+    ventas: [],
     pagination: null,
     loaded: false,
     loading: false,
     error: null
 };
 
-export function ingresosReducer(state = estadoInicial, action: fromIngresos.ingresosAcciones): IngresosState {
+export function ventasReducer(state = estadoInicial, action: fromVentas.ventasAcciones): VentasState {
     switch (action.type) {
-        case fromIngresos.CARGAR_INGRESOS:
+        case fromVentas.CARGAR_VENTAS:
             return {
                 ...state,
                 loading: true
             };
-        case fromIngresos.CARGAR_INGRESOS_SUCCESS:
+        case fromVentas.CARGAR_VENTAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                ingresos: [...action.payload.ingresos],
+                ventas: [...action.payload.ventas],
                 pagination: {...action.payload.pagination}
             };
-        case fromIngresos.CARGAR_INGRESOS_FAIL:
+        case fromVentas.CARGAR_VENTAS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -43,19 +43,19 @@ export function ingresosReducer(state = estadoInicial, action: fromIngresos.ingr
                     url: action.payload.url
                 }
             };
-        case fromIngresos.MOSTRAR_INGRESOS:
+        case fromVentas.MOSTRAR_VENTAS:
             return {
                 ...state,
                 loading: true
             };
-        case fromIngresos.MOSTRAR_INGRESOS_SUCCESS:
+        case fromVentas.MOSTRAR_VENTAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                ingresos: [action.payload]
+                ventas: [action.payload]
             };
-        case fromIngresos.MOSTRAR_INGRESOS_FAIL:
+        case fromVentas.MOSTRAR_VENTAS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -66,20 +66,20 @@ export function ingresosReducer(state = estadoInicial, action: fromIngresos.ingr
                     url: action.payload.url
                 }
             };
-        case fromIngresos.CREAR_INGRESOS:
+        case fromVentas.CREAR_VENTAS:
             return {
                 ...state,
                 loading: true
             };
-        case fromIngresos.CREAR_INGRESOS_SUCCESS:
+        case fromVentas.CREAR_VENTAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                ingresos: [...action.payload.ingresos],
+                ventas: [...action.payload.ventas],
                 pagination: {...action.payload.pagination}
             };
-        case fromIngresos.CREAR_INGRESOS_FAIL:
+        case fromVentas.CREAR_VENTAS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -90,20 +90,20 @@ export function ingresosReducer(state = estadoInicial, action: fromIngresos.ingr
                     url: action.payload.url
                 }
             };
-        case fromIngresos.FILTRAR_INGRESOS:
+        case fromVentas.FILTRAR_VENTAS:
             return {
                 ...state,
                 loading: true
             };
-        case fromIngresos.FILTRAR_INGRESOS_SUCCESS:
+        case fromVentas.FILTRAR_VENTAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                ingresos: [...action.payload.ingresos],
+                ventas: [...action.payload.ventas],
                 pagination: {...action.payload.pagination}
             };
-        case fromIngresos.FILTRAR_INGRESOS_FAIL:
+        case fromVentas.FILTRAR_VENTAS_FAIL:
             return {
                 ...state,
                 loading: false,
@@ -114,20 +114,20 @@ export function ingresosReducer(state = estadoInicial, action: fromIngresos.ingr
                     url: action.payload.url
                 }
             };
-        case fromIngresos.ANULAR_INGRESOS:
+        case fromVentas.ANULAR_VENTAS:
             return {
                 ...state,
                 loading: true
             };
-        case fromIngresos.ANULAR_INGRESOS_SUCCESS:
+        case fromVentas.ANULAR_VENTAS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 loaded: true,
-                ingresos: state.ingresos.map((ingreso: Ingreso) =>
-                (ingreso.idIngreso === action.payload) ? { ...ingreso, estado: 'Anulado' } : { ...ingreso })
+                ventas: state.ventas.map((venta: Venta) =>
+                (venta.idVenta === action.payload) ? { ...venta, estado: 'Anulado' } : { ...venta })
             };
-        case fromIngresos.ANULAR_INGRESOS_FAIL:
+        case fromVentas.ANULAR_VENTAS_FAIL:
             return {
                 ...state,
                 loading: false,

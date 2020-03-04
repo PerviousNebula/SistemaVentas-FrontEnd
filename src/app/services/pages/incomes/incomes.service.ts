@@ -52,4 +52,15 @@ export class IncomesService {
                       catchError(error => this.errorHandlerService.showError(error))
                     );
   }
+
+  public desactivateIngreso(id: number) {
+    return this.http.put(`${environment.url}/ingresos/desactivar/${id}`, {}, {observe: 'response'})
+                    .pipe(
+                      map((resp: any) => {
+                        Swal.fire('Ingreso anulado', 'El ingreso ha sido anulado', 'success');
+                        return resp;
+                      }),
+                      catchError(error => this.errorHandlerService.showError(error))
+                    );
+  }
 }

@@ -17,7 +17,7 @@ export class ClientesEffects {
     cargarClientes = this.actions$.pipe(
         ofType(clientesActions.CARGAR_CLIENTES),
         switchMap((action: clientesActions.CargarClientes) => {
-            return this.clientesService.getClientes(action.payload).pipe(
+            return this.clientesService.getClientes(action.payload.page, action.payload.pageSize).pipe(
                 map((resp: any) => new clientesActions.CargarClientesSuccess({
                     clientes: resp.clientes,
                     pagination: resp.pagination

@@ -6,7 +6,8 @@ export { Usuario } from './pages/usuario';
 export { Persona } from './pages/persona';
 export { Ingreso } from './pages/ingreso';
 export { DetalleIngreso } from './pages/detalleIngreso';
-
+export { Venta } from './pages/venta';
+export { DetalleVenta } from './pages/detalleVenta';
 
 // Settings
 export { Settings } from './settings/settings';

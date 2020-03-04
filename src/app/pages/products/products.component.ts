@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { environment } from '../../../environments/environment';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -15,10 +16,11 @@ import * as articulosActions from '../../store/actions';
   templateUrl: './products.component.html'
 })
 export class ProductsComponent implements OnInit, OnDestroy {
+  public url = environment.url;
   public articulos: Articulo[];
   public categorias: Categoria[];
   public pagination: Pagination;
-  public filterHint: string;
+  public filterHint = '';
   public filtering: boolean;
   public loading: boolean;
   private subscription: Subscription = new Subscription();
@@ -181,6 +183,11 @@ export class ProductsComponent implements OnInit, OnDestroy {
       this.filtering = false;
       this.store.dispatch(new articulosActions.CargarArticulos(1));
     }
+  }
+
+  public downloadPDF(): void {
+    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Articulos?filter=${this.filterHint}`
+                                                  : `${environment.url}/pdfcreator/Articulos`;
   }
 
 }

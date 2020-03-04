@@ -9,6 +9,7 @@ import {
   SuppliersService,
   UsersService,
   IncomesService,
+  SellsService,
   SettingsService,
   SidebarService,
   SharedService
@@ -23,6 +24,7 @@ import {
     SuppliersService,
     UsersService,
     IncomesService,
+    SellsService,
     SettingsService,
     SharedService,
     SidebarService

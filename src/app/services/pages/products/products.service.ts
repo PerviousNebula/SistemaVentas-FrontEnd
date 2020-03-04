@@ -83,5 +83,5 @@ export class ProductsService {
              .pipe(
                catchError(error => this.errorHandlerService.showError(error))
              );
-    }
+  }
 }

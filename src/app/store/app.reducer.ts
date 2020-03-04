@@ -9,6 +9,7 @@ export interface AppState {
     clientes: reducers.ClientesState;
     proveedores: reducers.ProveedoresState;
     ingresos: reducers.IngresosState;
+    ventas: reducers.VentasState;
 }
 
 export const appReducers: ActionReducerMap<AppState> = {
@@ -18,5 +19,6 @@ export const appReducers: ActionReducerMap<AppState> = {
     usuarios: reducers.usuariosReducer,
     clientes: reducers.clientesReducer,
     proveedores: reducers.proveedoresReducer,
-    ingresos: reducers.ingresosReducer
+    ingresos: reducers.ingresosReducer,
+    ventas: reducers.ventasReducer
 };

@@ -1,0 +1,162 @@
+<div class="row animated fadeIn">
+    <!-- Column -->
+    <div *ngIf="!loading" class="col-12">
+        <div class="card">
+            <div class="tab-content">
+                <div class="tab-pane active" id="settings" role="tabpanel" aria-expanded="true">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <form [formGroup]="sellForm" class="form-horizontal form-material">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': sellForm.controls['tipo_comprobante'].errors && sellForm.controls['tipo_comprobante'].touched}">
+                                                <label class="col-md-12">Tipo Comprobante <span class="text-danger"> *</span></label>
+                                                <div class="col-md-12">
+                                                    <select formControlName="tipo_comprobante" class="form-control form-control-line">
+                                                        <option value="">Elija un tipo de comprobante</option>
+                                                        <option value="FACTURA">FACTURA</option>
+                                                        <option value="BOLETA">BOLETA</option>
+                                                        <option value="TICKET">TICKET</option>
+                                                        <option value="GUÍA">GUÍA</option>
+                                                    </select>
+                                                    <span *ngIf="sellForm.controls['tipo_comprobante'].errors && sellForm.controls['tipo_comprobante'].touched">Este campo es obligatorio</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': sellForm.controls['serie_comprobante'].errors && sellForm.controls['serie_comprobante'].touched}">
+                                                <label class="col-md-12">Serie Comprobante <span class="text-danger"> *</span></label>
+                                                <div class="col-md-12">
+                                                    <input formControlName="serie_comprobante" type="text" placeholder="Serie del comprobante" class="form-control form-control-line" id="example-email">
+                                                    <span *ngIf="sellForm.controls['serie_comprobante'].errors?.required && sellForm.controls['serie_comprobante'].touched">Este campo es obligatorio</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': sellForm.controls['num_comprobante'].errors && sellForm.controls['num_comprobante'].touched}">
+                                                <label class="col-md-12">Número Comprobante <span class="text-danger"> *</span></label>
+                                                <div class="col-md-12">
+                                                    <input formControlName="num_comprobante" type="text" placeholder="Número del comprobante" class="form-control form-control-line">
+                                                    <span *ngIf="sellForm.controls['num_comprobante'].errors?.required && sellForm.controls['num_comprobante'].touched">Este campo es obligatorio</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-8 col-xl-8">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': sellForm.controls['idCliente'].errors && sellForm.controls['idCliente'].touched}">
+                                                <label class="col-md-12">Cliente <span class="text-danger"> *</span></label>
+                                                <div class="col-md-12">
+                                                    <select formControlName="idCliente" class="form-control form-control-line">
+                                                        <option value="">Elija un cliente</option>
+                                                        <option *ngFor="let cliente of clientes" [value]="cliente.idPersona">{{ cliente.nombre }}</option>
+                                                    </select>
+                                                    <span *ngIf="sellForm.controls['idCliente'].errors?.required && sellForm.controls['idCliente'].touched">Este campo es obligatorio</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': sellForm.controls['impuesto'].errors && sellForm.controls['impuesto'].touched}">
+                                                <label class="col-md-12">Impuesto <span class="text-danger"> *</span></label>
+                                                <div class="col-md-12">
+                                                    <input formControlName="impuesto" type="number" placeholder="Impuesto al ingreso" class="form-control form-control-line">
+                                                    <span *ngIf="sellForm.controls['impuesto'].errors?.minlength && sellForm.controls['impuesto'].touched">Este número de télefono es inválido</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="routeParam === 'nuevo'" class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
+                                            <div class="form-group" [ngClass]="{'text-danger animated shake': errorCodigoArticulo}">
+                                                <label class="col-12">Código del artículo</label>
+                                                <div class="col-12 input-group">
+                                                    <input #codigoArticuloInput class="form-control form-control-line" 
+                                                    (keyup.Enter)="filterProducts(codigoArticuloInput.value); codigoArticuloInput.value = ''" 
+                                                    placeholder="Código a buscar" 
+                                                    type="text" 
+                                                    value="">
+                                                    <span class="input-group-btn">
+                                                        <button class="btn-circle cursor-pointer btn-primary" type="button" (click)="imgOverlayService.mostrarModal()">
+                                                            <i class="fa fa-list"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Artículo</th>
+                                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Cantidad</th>
+                                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Precio</th>
+                                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descuento</th>
+                                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Subtotal</th>
+                                                        <th *ngIf="routeParam === 'nuevo'" tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <ng-container formArrayName="detalles" *ngIf="getDetallesVenta.value.length; else noDetails">
+                                                        <tr [formGroupName]="i" *ngFor="let detalle of getDetallesVenta.controls; let i = index">
+                                                            <td>{{ detalle.get('nombre').value }}</td>
+                                                            <td>
+                                                                <input class="form-control form-control-line" formControlName="cantidad" type="number" placeholder="Cantidad del articulo" />
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control form-control-line" formControlName="precio" type="number" placeholder="Precio del articulo" />
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control form-control-line" formControlName="descuento" type="number" placeholder="Descuento al articulo" />
+                                                            </td>
+                                                            <td>{{ detalle.get('precio').value * detalle.get('cantidad').value - detalle.get('descuento').value | currency }}</td>
+                                                            <td *ngIf="routeParam === 'nuevo'">
+                                                                <button class="btn btn-danger btn-sm" type="button" (click)="deleteDetail(i)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </ng-container>
+                                                    <ng-template #noDetails>
+                                                        <tr>
+                                                            <td class="text-center" colspan="6"><h4>No has agregado detalles...</h4></td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8 col-xl-9"></div>
+                                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4 col-xl-3 text-right">
+                                            <ul class="list-group">
+                                                <li class="list-group-item">Total Parcial: {{ totalDetallesVenta - (totalDetallesVenta * sellForm.controls.impuesto.value / 100) | currency }}</li>
+                                                <li class="list-group-item">Total Impuesto: {{ (totalDetallesVenta * sellForm.controls.impuesto.value) / 100 | currency }}</li>
+                                                <li class="list-group-item">Total Neto: {{ totalDetallesVenta | currency }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="routeParam === 'nuevo'" class="row mt-4">
+                                        <div class="col-12 text-right">
+                                            <button type="button" class="btn btn-danger mr-1" (click)="confirmCancel($event)">Cancelar</button>
+                                            <button type="button" class="btn btn-success" [ngClass]="{'disabled': sellForm.invalid}"
+                                                    [disabled]="sellForm.invalid" (click)="guardarVenta()">Guardar Cambios</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="loading" class="col-12 text-center">
+        <i class="fa fa-4x fa-spinner fa-spin"></i>
+        <br>
+        <span>Cargando...</span>
+    </div>
+</div>
+<app-image-overlay (eventArticulos)="agregarArticulosModal($event)"></app-image-overlay>

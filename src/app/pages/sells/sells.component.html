@@ -2,22 +2,22 @@
     <div class="col-12">
         <div class="card">
             <div *ngIf="!loading" class="card-body">
-                <h4 class="card-title">Filtra fácilmente tus ingresos registrados</h4>
+                <h4 class="card-title">Filtra fácilmente tus ventas registradas</h4>
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
                 <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
-                        <div *ngIf="ingresos.length" class="dt-buttons">
+                        <div *ngIf="ventas.length" class="dt-buttons">
                             <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="downloadPDF()"><span>PDF</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>PDF</span></a>
                         </div>
-                        <div *ngIf="ingresos.length" id="example23_filter" class="dataTables_filter">
+                        <div *ngIf="ventas.length" id="example23_filter" class="dataTables_filter">
                             <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Serie del comprobante" aria-controls="example23"></label>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
                                 <tr role="row">
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Usuario</th>
-                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Proveedor</th>
+                                    <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Cliente</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Tipo Comprobante</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Serie Comprobante</th>
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">No. Comprobante</th>
@@ -28,22 +28,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <ng-container *ngIf="ingresos.length; else sinRegistros">
-                                    <tr *ngFor="let ingreso of ingresos">
-                                        <td>{{ ingreso.usuario }}</td>
-                                        <td>{{ ingreso.proveedor }}</td>
-                                        <td>{{ ingreso.tipo_comprobante }}</td>
-                                        <td>{{ ingreso.serie_comprobante }}</td>
-                                        <td>{{ ingreso.num_comprobante }}</td>
-                                        <td>{{ ingreso.fecha_hora | date }}</td>
-                                        <td>{{ ingreso.total | currency }}</td>
+                                <ng-container *ngIf="ventas.length; else sinRegistros">
+                                    <tr *ngFor="let venta of ventas">
+                                        <td>{{ venta.usuario }}</td>
+                                        <td>{{ venta.cliente }}</td>
+                                        <td>{{ venta.tipo_comprobante }}</td>
+                                        <td>{{ venta.serie_comprobante }}</td>
+                                        <td>{{ venta.num_comprobante }}</td>
+                                        <td>{{ venta.fecha_hora | date }}</td>
+                                        <td>{{ venta.total | currency }}</td>
                                         <td>
-                                            <span *ngIf="ingreso.estado === 'Aceptado'" class="badge badge-success">ACEPTADO</span>
-                                            <span *ngIf="ingreso.estado !== 'Aceptado'" class="badge badge-danger">ANULADO</span>
+                                            <span *ngIf="venta.estado === 'Aceptado'" class="badge badge-success">ACEPTADO</span>
+                                            <span *ngIf="venta.estado !== 'Aceptado'" class="badge badge-danger">ANULADO</span>
                                         </td>
                                         <td>
-                                            <a [routerLink]="['/incomes', ingreso.idIngreso]" type="button" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
-                                            <button *ngIf="ingreso.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger" (click)="desactivateIngreso(ingreso)">
+                                            <a [routerLink]="['/sells', venta.idVenta]" type="button" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
+                                            <button *ngIf="venta.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger" (click)="desactivateVenta(venta)">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </td>
@@ -52,31 +52,31 @@
                                 <ng-template #sinRegistros>
                                     <tr>
                                         <td colspan="10">
-                                            <h4 class="text-center m-1">No hay ingresos registrados...</h4>
+                                            <h4 class="text-center m-1">No hay ventas registradas...</h4>
                                         </td>
                                     </tr>
                                 </ng-template>
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="9">
-                                        <a [routerLink]="['/incomes', 'nuevo']" class="btn btn-primary btn-sm"><i class="fa fa-plus mr-1"></i>Nuevo Ingreso</a>
+                                    <th class="text-right" rowspan="1" colspan="10">
+                                        <a [routerLink]="['/sells', 'nuevo']" class="btn btn-primary btn-sm"><i class="fa fa-plus mr-1"></i>Nueva Venta</a>
                                     </th>
                                 </tr>
                             </tfoot>
                         </table>
-                        <div *ngIf="pagination && ingresos.length" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
+                        <div *ngIf="pagination && ventas.length" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
                             Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
                         </div>
-                        <div *ngIf="pagination && ingresos.length" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
+                        <div *ngIf="pagination && ventas.length" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
                             <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getIngresos(-1)">
+                                    tabindex="0" id="example_previous" (click)="geVentas(-1)">
                                 Anterior
                             </button>
                             <span>
                                 <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
                             </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getIngresos(1)" class="paginate_button next" 
+                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getVentas(1)" class="paginate_button next" 
                                     aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
                                 Siguiente
                             </button>
@@ -87,7 +87,7 @@
             <div *ngIf="loading" class="card-body text-center">
                 <i class="fa fa-spinner fa-spin fa-4x"></i>
                 <br>
-                <span>Cargando sus ingresos...</span>
+                <span>Cargando sus ventas...</span>
             </div>
         </div>
     </div>

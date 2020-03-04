@@ -17,6 +17,10 @@ export const FILTRAR_INGRESOS = '[Ingresos] Filtrar ingresos';
 export const FILTRAR_INGRESOS_FAIL = '[Ingresos] Filtrar ingresos FAIL';
 export const FILTRAR_INGRESOS_SUCCESS = '[Ingresos] Filtrar ingresos SUCCESS';
 
+export const ANULAR_INGRESOS = '[Ingresos] Anular ingresos';
+export const ANULAR_INGRESOS_FAIL = '[Ingresos] Anular ingresos FAIL';
+export const ANULAR_INGRESOS_SUCCESS = '[Ingresos] Anular ingresos SUCCESS';
+
 export class CargarIngresos implements Action {
     readonly type = CARGAR_INGRESOS;
 
@@ -89,6 +93,24 @@ export class FiltrarIngresosSuccess implements Action {
     constructor(public payload: any) { }
 }
 
+export class AnularIngresos implements Action {
+    readonly type = ANULAR_INGRESOS;
+
+    constructor(public payload: any) { }
+}
+
+export class AnularIngresosFail implements Action {
+    readonly type = ANULAR_INGRESOS_FAIL;
+
+    constructor(public payload?: any) { }
+}
+
+export class AnularIngresosSuccess implements Action {
+    readonly type = ANULAR_INGRESOS_SUCCESS;
+
+    constructor(public payload: any) { }
+}
+
 export type ingresosAcciones = CargarIngresos |
                                CargarIngresosFail |
                                CargarIngresosSuccess |
@@ -100,4 +122,7 @@ export type ingresosAcciones = CargarIngresos |
                                CrearIngresosSuccess |
                                FiltrarIngresos |
                                FiltrarIngresosFail |
-                               FiltrarIngresosSuccess;
+                               FiltrarIngresosSuccess |
+                               AnularIngresos |
+                               AnularIngresosFail |
+                               AnularIngresosSuccess;

@@ -5,6 +5,7 @@ import { UsuariosEffects } from './usuarios.effects';
 import { ClientesEffects } from './clientes.effects';
 import { ProveedoresEffects } from './proveedores.effects';
 import { IngresosEffects } from './ingresos.effects';
+import { VentasEffects } from './ventas.effects';
 
 export const effectsArr: any[] =
     [
@@ -14,7 +15,8 @@ export const effectsArr: any[] =
         UsuariosEffects,
         ClientesEffects,
         ProveedoresEffects,
-        IngresosEffects
+        IngresosEffects,
+        VentasEffects
     ];
 
 export * from './categorias.effects';
@@ -24,3 +26,4 @@ export * from './usuarios.effects';
 export * from './clientes.effects';
 export * from './proveedores.effects';
 export * from './ingresos.effects';
+export * from './ventas.effects';

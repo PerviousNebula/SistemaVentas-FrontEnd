@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -21,7 +22,7 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   // Variables para el manejo del filtrado
-  public filterHint: string;
+  public filterHint = '';
   public filtering = false;
 
   constructor(private store: Store<AppState>) { }
@@ -139,6 +140,11 @@ export class CategoriesComponent implements OnInit, OnDestroy {
       this.filtering = false;
       this.store.dispatch(new categoriasActions.CargarCategorias(1));
     }
+  }
+
+  public downloadPDF(): void {
+    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Categorias?filter=${this.filterHint}`
+                                                  : `${environment.url}/pdfcreator/Categorias`;
   }
 
 }

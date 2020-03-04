@@ -22,6 +22,8 @@ import { ClientsComponent } from './clients/clients.component';
 import { SupplierComponent } from './supplier/supplier.component';
 import { IncomesComponent } from './incomes/incomes.component';
 import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
+import { SellsComponent } from './sells/sells.component';
+import { SellsManagementComponent } from './sells-management/sells-management.component';
 
 const ROUTES: Routes = [
     {
@@ -96,7 +98,19 @@ const ROUTES: Routes = [
                 path: 'incomes/:id',
                 component: IncomesManagementComponent,
                 canActivate: [AlmaceneroGuard],
-                data: { title: 'Ingresos', desc: 'Cree o edite sus ingresos en el sistema' }
+                data: { title: 'Ingresos', desc: 'Cree o vea sus ingresos en el sistema' }
+            },
+            {
+                path: 'sells',
+                component: SellsComponent,
+                canActivate: [VendedorGuard],
+                data: { title: 'Ventas', desc: 'Cree o vea sus ventas en el sistema' }
+            },
+            {
+                path: 'sells/:id',
+                component: SellsManagementComponent,
+                canActivate: [VendedorGuard],
+                data: { title: 'Ingresos', desc: 'Cree o vea sus ingresos en el sistema' }
             },
             {
                 path: '',

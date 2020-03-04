@@ -8,8 +8,7 @@
                     <div id="example23_wrapper" class="dataTables_wrapper">
                         <div class="dt-buttons">
                             <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>PDF</span></a>
-                            <a class="dt-button buttons-print" tabindex="0" aria-controls="example23" href="#"><span>Imprimir</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="downloadPDF()"><span>PDF</span></a>
                         </div>
                         <div id="example23_filter" class="dataTables_filter">
                             <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Nombre del artículo" aria-controls="example23"></label>

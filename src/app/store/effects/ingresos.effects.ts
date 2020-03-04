@@ -67,4 +67,15 @@ export class IngresosEffects {
             );
         })
     );
+
+    @Effect()
+    anularIngresos$ = this.actions$.pipe(
+        ofType(ingresosActions.ANULAR_INGRESOS),
+        switchMap((action: ingresosActions.AnularIngresos) => {
+            return this.ingresosService.desactivateIngreso(action.payload).pipe(
+                map(() => new ingresosActions.AnularIngresosSuccess(action.payload)),
+                catchError(error => of(new ingresosActions.AnularIngresosFail(error)))
+            );
+        })
+    );
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Persona, Pagination } from '../../interfaces/interfaces.index';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 // NGRX
@@ -17,7 +18,7 @@ export class SupplierComponent implements OnInit, OnDestroy {
   public pagination: Pagination;
   public loading: boolean;
   private filtering: boolean;
-  public filterHint: string;
+  public filterHint = '';
   private subscription = new Subscription();
 
   constructor(private store: Store<AppState>) { }
@@ -154,6 +155,11 @@ export class SupplierComponent implements OnInit, OnDestroy {
       this.filtering = false;
       this.store.dispatch(new proveedoressActions.CargarProveedores(1));
     }
+  }
+
+  public downloadPDF(): void {
+    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Proveedores?filter=${this.filterHint}`
+                                                  : `${environment.url}/pdfcreator/Proveedores`;
   }
 
 }
