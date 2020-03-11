@@ -4,14 +4,38 @@
             <div *ngIf="!loading" class="card-body">
                 <h4 class="card-title">Filtra fácilmente tus categorías registradas</h4>
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
-                <div *ngIf="categorias" class="table-responsive m-t-40">
+                <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
+                        <form (ngSubmit)="filtrar()" [formGroup]="filterForm">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-4">
+                                    <label for="nombreCategoria">Nombre</label>
+                                    <input formControlName="nombre" id="nombreCategoria" type="text" class="form-control form-control-line" placeholder="Nombre de la categoría" /> 
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-5 col-lg-5 col-xl-4">
+                                    <label for="desCategoria">Descripción</label>
+                                    <input formControlName="descripcion" id="desCategoria" type="text" class="form-control form-control-line" placeholder="Descripción de la categoría" /> 
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                                    <span class="w-100 badge badge-success" *ngIf="filterFormValue.activo">ACTIVA</span>
+                                    <span class="w-100 badge badge-danger" *ngIf="!filterFormValue.activo">INACTIVA</span>
+                                    <div class="switch text-center mt-2">
+                                        <label>
+                                            <input formControlName="activo" type="checkbox" checked=""><span class="lever switch-col-red"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-2 text-right">
+                                    <button type="submit" class="btn btn-primary mt-xl-4">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
                         <div *ngIf="categorias.length" class="dt-buttons">
-                            <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="downloadPDF()"><span>PDF</span></a>
+                            <a class="dt-button buttons-excel buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printExcelCategories()"><span>Excel</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printPDFCategories()"><span>PDF</span></a>
                         </div>
-                        <div *ngIf="categorias.length" id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre de la categoría" aria-controls="example23"></label>
+                        <div id="example23_filter" class="dataTables_filter">
+                            <button class="btn btn-secondary" (click)="resetAll()">Reiniciar búsqueda</button>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
@@ -22,45 +46,37 @@
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <ng-container *ngIf="categorias.length; else noRecords">
+                                    <tr *ngFor="let categoria of categorias">
+                                        <td>{{ categoria.nombre }}</td>
+                                        <td>{{ categoria.descripcion }}</td>
+                                        <td>
+                                            <span *ngIf="categoria.activo" class="badge badge-success">ACTIVA</span>
+                                            <span *ngIf="!categoria.activo" class="badge badge-danger">INACTIVA</span>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-info mr-1" (click)="editCategoria(categoria)"><i class="fa fa-edit"></i></button>
+                                            <button *ngIf="categoria.activo" class="btn btn-sm btn-danger" (click)="desactivateCategoria(categoria)"><i class="fa fa-trash"></i></button>
+                                            <button *ngIf="!categoria.activo" class="btn btn-sm btn-info" (click)="activateCategoria(categoria)"><i class="fa fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-template #noRecords>
+                                    <tr><td colspan="4"><h4 class="text-center m-1">No hay categorias...</h4></td></tr>
+                                </ng-template>
+                            </tbody>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="4">
-                                        <button class="btn btn-primary btn-sm" (click)="newCategoria()"><i class="fa fa-plus mr-1"></i>Nueva Categoría</button>
+                                    <th class="text-xl-right text-lg-right" rowspan="1" colspan="4">
+                                        <button class="btn btn-primary btn-sm" (click)="newCategoria()">
+                                            <i class="fa fa-plus mr-1"></i>Nueva Categoría
+                                        </button>
                                     </th>
                                 </tr>
                             </tfoot>
-                            <tbody>
-                                <tr *ngFor="let categoria of categorias">
-                                    <td>{{ categoria.nombre }}</td>
-                                    <td>{{ categoria.descripcion }}</td>
-                                    <td>
-                                        <span *ngIf="categoria.activo" class="badge badge-success">ACTIVA</span>
-                                        <span *ngIf="!categoria.activo" class="badge badge-danger">INACTIVA</span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-info mr-1" (click)="editCategoria(categoria)"><i class="fa fa-edit"></i></button>
-                                        <button *ngIf="categoria.activo" class="btn btn-sm btn-danger" (click)="desactivateCategoria(categoria)"><i class="fa fa-trash"></i></button>
-                                        <button *ngIf="!categoria.activo" class="btn btn-sm btn-info" (click)="activateCategoria(categoria)"><i class="fa fa-undo"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
                         </table>
-                        <div *ngIf="pagination" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
-                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
-                        </div>
-                        <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getCategorias(-1)">
-                                Anterior
-                            </button>
-                            <span>
-                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
-                            </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getCategorias(1)" class="paginate_button next" 
-                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
-                                Siguiente
-                            </button>
-                        </div>
+                        <app-pagination *ngIf="categorias.length" [pagination]="pagination" (event)="getCategorias($event)"></app-pagination>
                     </div>
                 </div>
             </div>

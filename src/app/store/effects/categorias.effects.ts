@@ -58,7 +58,7 @@ export class CategoriasEffects {
     filtrarCategorias$ = this.actions$.pipe(
         ofType(categoriasActions.FILTRAR_CATEGORIAS),
         switchMap((action: categoriasActions.FiltrarCategorias) => {
-            return this.categoriasService.filterCategoria(action.payload.hint, action.payload.page).pipe(
+            return this.categoriasService.filterCategoria(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => {
                     return new categoriasActions.FiltrarCategoriasSuccess({
                         categorias: resp.categorias,

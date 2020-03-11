@@ -1,12 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Persona, Pagination } from '../../interfaces/interfaces.index';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
+
+// Interfaces
+import { Persona, Pagination } from '../../interfaces/interfaces.index';
 
 // NGRX
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
-import * as clientessActions from '../../store/actions';
+import * as clientesActions from '../../store/actions';
 
 @Component({
   selector: 'app-clients',
@@ -17,7 +20,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
   public pagination: Pagination;
   public loading: boolean;
   private filtering: boolean;
-  public filterHint: string;
+  public filterHint = '';
   private subscription = new Subscription();
 
   constructor(private store: Store<AppState>) { }
@@ -28,7 +31,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
       this.clientes = node.clientes;
       this.pagination = node.pagination;
     }));
-    this.store.dispatch(new clientessActions.CargarClientes(1));
+    this.store.dispatch(new clientesActions.CargarClientes(1));
   }
 
   ngOnDestroy() {
@@ -37,7 +40,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
 
   public getClientes(page: number) {
     if (!this.filtering) {
-      this.store.dispatch(new clientessActions.CargarClientes(this.pagination.CurrentPage + page));
+      this.store.dispatch(new clientesActions.CargarClientes(this.pagination.CurrentPage + page));
     } else {
       this.filtrar(page);
     }
@@ -84,7 +87,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
 
     if (formValues && formValues.nombre) {
       formValues.tipo_persona = 'cliente';
-      this.store.dispatch(new clientessActions.CrearClientes(formValues));
+      this.store.dispatch(new clientesActions.CrearClientes(formValues));
       this.filterHint = '';
     } else if (formValues && !formValues.nombre) {
       Swal.fire('Nuevo cliente', 'El nombre del cliente es obligatorio!', 'error');
@@ -135,7 +138,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
       if (!formValues.tipo_documento) {
         formValues.tipo_documento = cliente.tipo_documento;
       }
-      this.store.dispatch(new clientessActions.EditarClientes(formValues));
+      this.store.dispatch(new clientesActions.EditarClientes(formValues));
     } else if (formValues && !formValues.nombre) {
       Swal.fire('Editar cliente', 'El nombre del cliente es obligatorio!', 'error');
     }
@@ -144,7 +147,7 @@ export class ClientsComponent implements OnInit, OnDestroy {
   public filtrar(page: number = 0) {
     if (this.filterHint.length) {
       this.filtering = true;
-      this.store.dispatch(new clientessActions.FiltrarClientes(
+      this.store.dispatch(new clientesActions.FiltrarClientes(
         {
           hint: this.filterHint,
           page: !page ? 1 : this.pagination.CurrentPage + page
@@ -152,8 +155,13 @@ export class ClientsComponent implements OnInit, OnDestroy {
       ));
     } else {
       this.filtering = false;
-      this.store.dispatch(new clientessActions.CargarClientes(1));
+      this.store.dispatch(new clientesActions.CargarClientes(1));
     }
+  }
+
+  public printClients(): void {
+    window.open(this.filterHint.length ? `${environment.url}/pdfcreator/Clientes?filter=${this.filterHint}`
+                                       : `${environment.url}/pdfcreator/Clientes`, '_blank');
   }
 
 }

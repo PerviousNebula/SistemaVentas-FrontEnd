@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { FormGroup, FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -10,6 +10,7 @@ import { Categoria, Pagination } from '../../interfaces/interfaces.index';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
 import * as categoriasActions from '../../store/actions';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-categories',
@@ -21,13 +22,20 @@ export class CategoriesComponent implements OnInit, OnDestroy {
   public pagination: Pagination;
   private subscriptions: Subscription = new Subscription();
 
-  // Variables para el manejo del filtrado
-  public filterHint = '';
-  public filtering = false;
+  // Formulario para el filtrado
+  public filterForm: FormGroup;
+  private filterSubmited = false;
 
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
+    // Formulario para el filtrado
+    this.filterForm = new FormGroup({
+      nombre: new FormControl(''),
+      descripcion: new FormControl(''),
+      activo: new FormControl(true)
+    });
+
     this.subscriptions.add(this.store.select('categorias').subscribe(node => {
       this.loading = node.loading;
       this.categorias = node.categorias;
@@ -40,15 +48,22 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  getCategorias(page: number) {
-    if (!this.filtering) {
-      this.store.dispatch(new categoriasActions.CargarCategorias(this.pagination.CurrentPage + page));
+  public get filterFormValue(): any {
+    return this.filterForm.value;
+  }
+
+  public getCategorias(page: number = 0): void {
+    if (!this.filterSubmited) {
+      this.store.dispatch(new categoriasActions.CargarCategorias({
+        pageNumber: this.pagination.CurrentPage + page,
+        pageSize: 10
+      }));
     } else {
       this.filtrar(page);
     }
   }
 
-  async newCategoria() {
+  public async newCategoria() {
     const { value: formValues } = await Swal.fire({
       title: 'Nueva categoría',
       html:
@@ -70,13 +85,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
 
     if (formValues && formValues.nombre) {
       this.store.dispatch(new categoriasActions.CrearCategoria(formValues));
-      this.filterHint = '';
     } else if (formValues && !formValues.nombre) {
       Swal.fire('Nueva categoría', 'El nombre de la categoría es obligatorio!', 'error');
     }
   }
 
-  async editCategoria(categoria: Categoria) {
+  public async editCategoria(categoria: Categoria) {
     const { value: formValues } = await Swal.fire({
       title: 'Editar categoría',
       html:
@@ -104,12 +118,12 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     }
   }
 
-  activateCategoria(categoria: Categoria) {
+  public activateCategoria(categoria: Categoria): void {
     categoria.activo = true;
     this.store.dispatch(new categoriasActions.ActivarCategorias(categoria));
   }
 
-  async desactivateCategoria(categoria: Categoria) {
+  public async desactivateCategoria(categoria: Categoria) {
     Swal.fire({
       title: 'Desactivar categoría',
       text: `¿Está seguro que desea desactivar la categoria ${categoria.nombre}?`,
@@ -127,24 +141,35 @@ export class CategoriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  filtrar(page: number = 0) {
-    if (this.filterHint.length) {
-      this.filtering = true;
-      this.store.dispatch(new categoriasActions.FiltrarCategorias(
-        {
-          hint: this.filterHint,
-          page: !page ? 1 : this.pagination.CurrentPage + page
-        }
-      ));
+  public filtrar(page?: number): void {
+    this.filterSubmited = true;
+    this.store.dispatch(new categoriasActions.FiltrarCategorias({
+        model: this.filterForm.value,
+        page: !page ? 1 : this.pagination.CurrentPage + page
+    }));
+  }
+
+  public resetAll(): void {
+    this.filterForm.reset();
+    this.filterForm.patchValue({ activo: true });
+    this.filterSubmited = false;
+    this.store.dispatch(new categoriasActions.CargarCategorias(1));
+  }
+
+  public printExcelCategories(): void {
+    if (this.filterSubmited) {
+      window.open(`${environment.url}/csvcreator/categorias?nombre=${this.filterForm.value.nombre}&descripcion=${this.filterForm.value.descripcion}&activo=${this.filterForm.value.activo}`, '_blank');
     } else {
-      this.filtering = false;
-      this.store.dispatch(new categoriasActions.CargarCategorias(1));
+      window.open(`${environment.url}/csvcreator/categorias?filtered=false`, '_blank');
     }
   }
 
-  public downloadPDF(): void {
-    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Categorias?filter=${this.filterHint}`
-                                                  : `${environment.url}/pdfcreator/Categorias`;
+  public printPDFCategories(): void {
+    if (this.filterSubmited) {
+      window.open(`${environment.url}/pdfcreator/categorias?nombre=${this.filterForm.value.nombre}&descripcion=${this.filterForm.value.descripcion}&activo=${this.filterForm.value.activo}`, '_blank');
+    } else {
+      window.open(`${environment.url}/pdfcreator/categorias?filtered=false`, '_blank');
+    }
   }
 
 }

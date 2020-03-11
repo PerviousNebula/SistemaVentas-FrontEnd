@@ -124,7 +124,7 @@ export class FiltrarArticulos implements Action {
 export class FiltrarArticulosFail implements Action {
     readonly type = FILTRAR_ARTICULOS_FAIL;
 
-    constructor(public payload: any) { }
+    constructor(public payload?: any) { }
 }
 
 export class FiltrarArticulosSuccess implements Action {

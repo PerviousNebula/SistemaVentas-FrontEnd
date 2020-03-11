@@ -28,13 +28,13 @@ export const DESACTIVAR_CATEGORIAS_SUCCESS = '[Categorias] Desactivar categorias
 export class CargarCategorias implements Action {
     readonly type = CARGAR_CATEGORIAS;
 
-    constructor(public payload?: any) { }
+    constructor(public payload: any) { }
 }
 
 export class CargarCategoriasFail implements Action {
     readonly type = CARGAR_CATEGORIAS_FAIL;
 
-    constructor(public payload: any) { }
+    constructor(public payload?: any) { }
 }
 
 export class CargarCategoriasSuccess implements Action {

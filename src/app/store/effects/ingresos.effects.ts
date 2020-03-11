@@ -59,7 +59,7 @@ export class IngresosEffects {
     filtrarIngresos$ = this.actions$.pipe(
         ofType(ingresosActions.FILTRAR_INGRESOS),
         switchMap((action: ingresosActions.FiltrarIngresos) => {
-            return this.ingresosService.filterIngresos(action.payload.hint, action.payload.page).pipe(
+            return this.ingresosService.filterIngresos(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => new ingresosActions.FiltrarIngresosSuccess(
                     { ingresos: resp.ingresos, pagination: resp.pagination })
                 ),

@@ -6,12 +6,61 @@
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
                 <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
+                        <form (ngSubmit)="filter()" [formGroup]="filterForm">
+                            <div class="row">
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>Proveedor</label>
+                                    <select formControlName="idProveedor" class="form-control form-control-line">
+                                        <option [ngValue]="0">Elija un proveedor</option>
+                                        <option *ngFor="let proveedor of proveedores" [ngValue]="proveedor.idPersona">{{ proveedor.nombre }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>Tipo de Comprobante</label>
+                                    <select formControlName="tipo_comprobante" class="form-control form-control-line">
+                                        <option value="">Elija un tipo</option>
+                                        <option value="FACTURA">FACTURA</option>
+                                        <option value="BOLETA">BOLETA</option>
+                                        <option value="TICKET">TICKET</option>
+                                        <option value="GUIA">GUIA</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>Serie de Comprobante</label>
+                                    <input formControlName="serie_comprobante" class="form-control form-control-line" type="text" placeholder="Serie del comprobante" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>No. de Comprobante</label>
+                                    <input formControlName="num_comprobante" class="form-control form-control-line" type="text" placeholder="Serie del comprobante" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>Fecha Inicio</label>
+                                    <input formControlName="fecha_inicio" class="form-control form-control-line" type="date" placeholder="Fecha inicio" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <label>Fecha Final</label>
+                                    <input formControlName="fecha_fin" class="form-control form-control-line" type="date" placeholder="Fecha final" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                                    <span *ngIf="filterForm.value.activo" class="w-100 badge badge-success">ACEPTADO</span>
+                                    <span *ngIf="!filterForm.value.activo" class="w-100 badge badge-danger">ANULADO</span>
+                                    <div class="switch text-center mt-2">
+                                        <label>
+                                            <input formControlName="activo" type="checkbox" checked=""><span class="lever switch-col-red"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-8 col-xl-3 text-right">
+                                    <button type="submit" class="btn btn-primary mt-4">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
                         <div *ngIf="ingresos.length" class="dt-buttons">
-                            <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="downloadPDF()"><span>PDF</span></a>
+                            <a class="dt-button buttons-excel buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printExcelIncomes()"><span>Excel</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printPDFIncomes()"><span>PDF</span></a>
                         </div>
-                        <div *ngIf="ingresos.length" id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Serie del comprobante" aria-controls="example23"></label>
+                        <div id="example23_filter" class="dataTables_filter">
+                            <button class="btn btn-secondary" (click)="resetAll()">Reinicar búsqueda</button>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
@@ -51,9 +100,7 @@
                                 </ng-container>
                                 <ng-template #sinRegistros>
                                     <tr>
-                                        <td colspan="10">
-                                            <h4 class="text-center m-1">No hay ingresos registrados...</h4>
-                                        </td>
+                                        <td colspan="10"><h4 class="text-center m-1">No hay ingresos registrados...</h4></td>
                                     </tr>
                                 </ng-template>
                             </tbody>
@@ -65,22 +112,7 @@
                                 </tr>
                             </tfoot>
                         </table>
-                        <div *ngIf="pagination && ingresos.length" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
-                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
-                        </div>
-                        <div *ngIf="pagination && ingresos.length" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getIngresos(-1)">
-                                Anterior
-                            </button>
-                            <span>
-                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
-                            </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getIngresos(1)" class="paginate_button next" 
-                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
-                                Siguiente
-                            </button>
-                        </div>
+                        <app-pagination *ngIf="ingresos.length" [pagination]="pagination" (event)="getIngresos($event)"></app-pagination>
                     </div>
                 </div>
             </div>

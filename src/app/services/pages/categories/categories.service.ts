@@ -22,8 +22,7 @@ export class CategoriesService {
               private errorHandlerService: ErrorHandlerService) { }
 
   public getCategorias(pageNumber: number = 1, pageSize: number = 10) {
-    return this.http.get<Categoria>(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-                                    {observe: 'response'})
+    return this.http.get(`${environment.url}/categorias/listar?pageNumber=${pageNumber}&pageSize=${pageSize}`, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError((error: any) => this.errorHandlerService.showError(error))
@@ -71,8 +70,8 @@ export class CategoriesService {
                     );
   }
 
-  public filterCategoria(hint: string, pageNumber: number) {
-    return this.http.get(`${environment.url}/categorias/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${10}`, {observe: 'response'})
+  public filterCategoria(model: Categoria, pageNumber: number) {
+    return this.http.post(`${environment.url}/categorias/filtrar?pageNumber=${pageNumber}&pageSize=10`, model, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ categorias: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError((error: any) => this.errorHandlerService.showError(error))

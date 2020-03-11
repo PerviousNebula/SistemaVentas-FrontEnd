@@ -45,8 +45,8 @@ export class IncomesService {
                     );
   }
 
-  public filterIngresos(hint: string, pageNumber: number, pageSize: number = 10) {
-    return this.http.get(`${environment.url}/ingresos/Filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {observe: 'response'})
+  public filterIngresos(model: any, pageNumber: number, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/ingresos/Filtrar/?pageNumber=${pageNumber}&pageSize=${pageSize}`, model,{observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ ingresos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError(error => this.errorHandlerService.showError(error))

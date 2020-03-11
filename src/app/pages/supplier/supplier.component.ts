@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Persona, Pagination } from '../../interfaces/interfaces.index';
+import { FormGroup, FormControl } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -17,13 +18,21 @@ export class SupplierComponent implements OnInit, OnDestroy {
   public proveedores: Persona[];
   public pagination: Pagination;
   public loading: boolean;
-  private filtering: boolean;
-  public filterHint = '';
   private subscription = new Subscription();
+
+  // Filtrado
+  private filterSubmited = false;
+  public filterForm: FormGroup;
 
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
+    this.filterForm = new FormGroup({
+      nombre: new FormControl(''),
+      direccion: new FormControl(''),
+      telefono: new FormControl(''),
+      email: new FormControl('')
+    });
     this.subscription.add(this.store.select('proveedores').subscribe(node => {
       this.loading = node.loading;
       this.proveedores = node.proveedores;
@@ -36,8 +45,8 @@ export class SupplierComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public getProveedores(page: number) {
-    if (!this.filtering) {
+  public getProveedores(page: number): void {
+    if (!this.filterSubmited) {
       this.store.dispatch(new proveedoressActions.CargarProveedores(this.pagination.CurrentPage + page));
     } else {
       this.filtrar(page);
@@ -86,13 +95,12 @@ export class SupplierComponent implements OnInit, OnDestroy {
     if (formValues && formValues.nombre) {
       formValues.tipo_persona = 'proveedor';
       this.store.dispatch(new proveedoressActions.CrearProveedores(formValues));
-      this.filterHint = '';
     } else if (formValues && !formValues.nombre) {
       Swal.fire('Nuevo proveedor', 'El nombre del proveedor es obligatorio!', 'error');
     }
   }
 
-  async editProveedor(proveedor: Persona) {
+  public async editProveedor(proveedor: Persona) {
     const { value: formValues } = await Swal.fire({
       title: 'Editar proveedor',
       html:
@@ -142,24 +150,38 @@ export class SupplierComponent implements OnInit, OnDestroy {
     }
   }
 
-  public filtrar(page: number = 0) {
-    if (this.filterHint.length) {
-      this.filtering = true;
-      this.store.dispatch(new proveedoressActions.FiltrarProveedores(
-        {
-          hint: this.filterHint,
-          page: !page ? 1 : this.pagination.CurrentPage + page
-        }
-      ));
+  public filtrar(page?: number): void {
+    this.filterSubmited = true;
+    this.store.dispatch(new proveedoressActions.FiltrarProveedores({
+        model: this.filterForm.value,
+        page: !page ? 1 : this.pagination.CurrentPage + page
+    }));
+  }
+
+  public printPDFSuppliers(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterForm.value;
+      let url = `${environment.url}/pdfcreator/proveedores?nombre=${filter.nombre}&direccion=${filter.direccion}&telefono=${filter.telefono}&email=${filter.email}`;
+      window.open(url);
     } else {
-      this.filtering = false;
-      this.store.dispatch(new proveedoressActions.CargarProveedores(1));
+      window.open(`${environment.url}/pdfcreator/proveedores?filtered=false`);
     }
   }
 
-  public downloadPDF(): void {
-    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Proveedores?filter=${this.filterHint}`
-                                                  : `${environment.url}/pdfcreator/Proveedores`;
+  public printExcelSuppliers(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterForm.value;
+      let url = `${environment.url}/csvcreator/proveedores?nombre=${filter.nombre}&direccion=${filter.direccion}&telefono=${filter.telefono}&email=${filter.email}`;
+      window.open(url);
+    } else {
+      window.open(`${environment.url}/csvcreator/proveedores?filtered=false`);
+    }
+  }
+
+  public resetAll(): void {
+    this.filterForm.reset();
+    this.filterSubmited = false;
+    this.store.dispatch(new proveedoressActions.CargarProveedores(1));
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { FormGroup, FormControl } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -16,18 +17,29 @@ import * as articulosActions from '../../store/actions';
   templateUrl: './products.component.html'
 })
 export class ProductsComponent implements OnInit, OnDestroy {
-  public url = environment.url;
   public articulos: Articulo[];
   public categorias: Categoria[];
   public pagination: Pagination;
-  public filterHint = '';
-  public filtering: boolean;
   public loading: boolean;
   private subscription: Subscription = new Subscription();
+
+  // Filtrado
+  public filterForm: FormGroup;
+  public filterSubmited = false;
 
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
+    this.filterForm = new FormGroup({
+      nombre: new FormControl(''),
+      descripcion: new FormControl(''),
+      codigo: new FormControl(''),
+      stock: new FormControl(0),
+      precio_min: new FormControl(0),
+      precio_max: new FormControl(0),
+      idCategoria: new FormControl(0),
+      activo: new FormControl(true)
+    });
     this.subscription.add(this.store.select('articulos').subscribe(node => {
       this.loading = node.loading;
       this.articulos = node.articulos;
@@ -42,15 +54,19 @@ export class ProductsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  getArticulos(page: number) {
-    if (!this.filtering) {
+  public get filterFormValue() {
+    return this.filterForm.value;
+  }
+
+  public getArticulos(page: number): void {
+    if (!this.filterSubmited) {
       this.store.dispatch(new articulosActions.CargarArticulos(this.pagination.CurrentPage + page));
     } else {
-      this.filter(page);
+      this.filtrar(page);
     }
   }
 
-  async newArticulo() {
+  public async newArticulo() {
     let categoriaSELECT = '';
     for (const categoria of this.categorias) {
       if (categoria.activo) {
@@ -98,7 +114,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }
   }
 
-  async editArticulo(articulo: Articulo) {
+  public async editArticulo(articulo: Articulo) {
     let categoriaSELECT = '';
     for (const categoria of this.categorias) { 
       if (categoria.activo) {
@@ -148,7 +164,7 @@ export class ProductsComponent implements OnInit, OnDestroy {
     }
   }
 
-  desactivateArticulo(articulo: Articulo) {
+  public desactivateArticulo(articulo: Articulo): void {
     Swal.fire({
       title: 'Desactivar artículo',
       text: `¿Está seguro que desea desactivar el artículo ${articulo.nombre}?`,
@@ -165,29 +181,68 @@ export class ProductsComponent implements OnInit, OnDestroy {
     });
   }
 
-  activateArticulo(articulo: Articulo) {
+  public activateArticulo(articulo: Articulo): void {
     this.store.dispatch(new articulosActions.ActivarArticulos(articulo));
   }
 
-  getCategorySelected(categoryName: string): number {
+  public getCategorySelected(categoryName: string): number {
     return this.categorias.filter(c => c.nombre === categoryName)[0].idCategoria;
   }
 
-  filter(page: number = 0) {
-    if (this.filterHint.length) {
-      this.filtering = true;
-      this.store.dispatch(new articulosActions.FiltrarArticulos(
-        { hint: this.filterHint, page: !page ? 1 : this.pagination.CurrentPage + page }
-      ));
+  public filtrar(page?: number): void {
+    this.filterSubmited = true;
+    this.store.dispatch(new articulosActions.FiltrarArticulos({
+      model: this.filterForm.value,
+      page: !page ? 1 : this.pagination.CurrentPage + page
+    }));
+  }
+
+  public printPDFProducts(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterFormValue;
+      let url = `${environment.url}/pdfcreator/Articulos?activo=${filter.activo}`;
+      if (filter.nombre) { url += `&nombre=${filter.nombre}`; }
+      if (filter.descripcion) { url += `&descripcion=${filter.descripcion}`; }
+      if (filter.codigo) { url += `&codigo=${filter.codigo}`; }
+      if (filter.stock > 0) { url += `&stock=${filter.stock}`; }
+      if (filter.precio_min > 0) { url += `&precio_min=${filter.precio_min}`; }
+      if (filter.precio_max > 0) { url += `&precio_max=${filter.precio_max}`; }
+      if (filter.idCategoria > 0) { url += `&idCategoria=${filter.idCategoria}`; }
+      window.open(url, '_blank');
     } else {
-      this.filtering = false;
-      this.store.dispatch(new articulosActions.CargarArticulos(1));
+      window.open(`${environment.url}/pdfcreator/Articulos?filtered=false`, '_blank');
     }
   }
 
-  public downloadPDF(): void {
-    window.location.href = this.filterHint.length ? `${environment.url}/pdfcreator/Articulos?filter=${this.filterHint}`
-                                                  : `${environment.url}/pdfcreator/Articulos`;
+  public printExcelProducts(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterFormValue;
+      let url = `${environment.url}/csvcreator/Articulos?`;
+      if (filter.nombre) url += `nombre=${filter.nombre}`;
+      if (filter.descripcion) url += `&descripcion=${filter.descripcion}`;
+      if (filter.codigo) url += `&codigo=${filter.codigo}`;
+      if (filter.stock > 0) url += `&stock=${filter.stock}`;
+      if (filter.precio_min > 0) url += `&precio_min=${filter.precio_min}`;
+      if (filter.precio_max > 0) url += `&precio_max=${filter.precio_max}`;
+      if (filter.idCategoria > 0) url += `&idCategoria=${filter.idCategoria}`;
+      url += `&activo=${filter.activo}`;
+      window.open(url);
+    } else {
+      window.open(`${environment.url}/csvcreator/Articulos?filtered=false`);
+    }
+  }
+
+  public resetAll(): void {
+    this.filterForm.reset();
+    this.filterForm.patchValue({
+      stock: 0,
+      precio_min: 0,
+      precio_max: 0,
+      idCategoria: 0,
+      activo: true
+    });
+    this.filterSubmited = false;
+    this.store.dispatch(new articulosActions.CargarArticulos(1));
   }
 
 }

@@ -49,9 +49,9 @@ export class SuppliersService {
                     );
   }
 
-  public filterProveedores(hint: string, pageNumber: number = 1, pageSize: number = 10) {
-    return this.http.get(`${environment.url}/Personas/FiltrarProveedores/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-                         {observe: 'response'})
+  public filterProveedores(model: any, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/Personas/FiltrarProveedores?pageNumber=${pageNumber}&pageSize=${pageSize}`, model,
+                          {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ proveedores: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError(error => this.errorHandlerService.showError(error))

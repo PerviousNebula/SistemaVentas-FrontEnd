@@ -69,9 +69,8 @@ export class ProductsService {
                     );
   }
 
-  public filterArticulos(hint: string, pageNumber: number = 1, pageSize: number = 10) {
-    return this.http.get<Articulo[]>(`${environment.url}/articulos/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-                                     {observe: 'response'})
+  public filterArticulos(model: any, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/articulos/filtrar?pageNumber=${pageNumber}&pageSize=${pageSize}`, model,{observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
                       catchError(error => this.errorHandlerService.showError(error))

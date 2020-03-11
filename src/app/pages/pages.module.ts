@@ -36,6 +36,7 @@ import { IncomesComponent } from './incomes/incomes.component';
 import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
 import { SellsComponent } from './sells/sells.component';
 import { SellsManagementComponent } from './sells-management/sells-management.component';
+import { PaginationComponent } from '../components/pagination/pagination.component';
 
 @NgModule({
     declarations: [
@@ -45,6 +46,7 @@ import { SellsManagementComponent } from './sells-management/sells-management.co
         IncrementadorComponent,
         GraficoDonaComponent,
         ImageOverlayComponent,
+        PaginationComponent,
         AccountSettingsComponent,
         CategoriesComponent,
         ProductsComponent,

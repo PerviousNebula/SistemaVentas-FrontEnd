@@ -31,7 +31,7 @@ export class ProveedoresEffects {
     filtrarProveedores = this.actions$.pipe(
         ofType(proveedoresActions.FILTRAR_PROVEEDORES),
         switchMap((action: proveedoresActions.FiltrarProveedores) => {
-            return this.proveedoresService.filterProveedores(action.payload.hint, action.payload.page).pipe(
+            return this.proveedoresService.filterProveedores(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => new proveedoresActions.FiltrarProveedoresSuccess({
                     proveedores: resp.proveedores,
                     pagination: resp.pagination

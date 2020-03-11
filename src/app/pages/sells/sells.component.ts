@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -67,6 +68,15 @@ export class SellsComponent implements OnInit {
         this.store.dispatch(new ventasActions.AnularVentas(idVenta));
       }
     });
+  }
+
+  public printVentas(): void {
+    window.open(this.filterHint.length ? `${environment.url}/pdfcreator/Ventas?filter=${this.filterHint}`
+                                       : `${environment.url}/pdfcreator/Ventas`, '_blank');
+  }
+
+  public printVenta({ idVenta }: Venta): void {
+    window.open(`${environment.url}/pdfcreator/venta/${idVenta}`, '_blank');
   }
 
 }

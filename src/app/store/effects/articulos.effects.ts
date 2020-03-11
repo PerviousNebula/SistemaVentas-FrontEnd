@@ -58,10 +58,8 @@ export class ArticulosEffects {
     filtrarArticulos$ = this.actions$.pipe(
         ofType(articulosActions.FILTRAR_ARTICULOS),
         switchMap((action: articulosActions.FiltrarArticulos) => {
-            return this.articulosService.filterArticulos(action.payload.hint, action.payload.page, action.payload.pageSize).pipe(
-                map((resp: any) => new articulosActions.FiltrarArticulosSuccess(
-                        { articulos: resp.articulos, pagination: resp.pagination })
-                    ),
+            return this.articulosService.filterArticulos(action.payload.model, action.payload.page).pipe(
+                map((resp: any) => new articulosActions.FiltrarArticulosSuccess({articulos: resp.articulos, pagination: resp.pagination})),
                 catchError(error => of(new articulosActions.FiltrarArticulosFail(error)))
             );
         })

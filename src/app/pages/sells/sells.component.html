@@ -8,7 +8,7 @@
                     <div id="example23_wrapper" class="dataTables_wrapper">
                         <div *ngIf="ventas.length" class="dt-buttons">
                             <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>PDF</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printVentas()"><span>PDF</span></a>
                         </div>
                         <div *ngIf="ventas.length" id="example23_filter" class="dataTables_filter">
                             <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Serie del comprobante" aria-controls="example23"></label>
@@ -43,9 +43,10 @@
                                         </td>
                                         <td>
                                             <a [routerLink]="['/sells', venta.idVenta]" type="button" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
-                                            <button *ngIf="venta.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger" (click)="desactivateVenta(venta)">
+                                            <button *ngIf="venta.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger mr-1" (click)="desactivateVenta(venta)">
                                                 <i class="fa fa-trash"></i>
                                             </button>
+                                            <button class="btn btn-sm btn-secondary" (click)="printVenta(venta)"><i class="fa fa-print"></i></button>
                                         </td>
                                     </tr>
                                 </ng-container>

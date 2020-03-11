@@ -96,7 +96,9 @@ export class SellsManagementComponent implements OnInit, OnDestroy {
     this.sellForm.get('idCliente').disable();
     this.sellForm.get('impuesto').disable();
     this.sellForm.get('num_comprobante').disable();
-    this.venta.detalles.forEach((item: any) => this.agregarDetalleVenta(item.idArticulo, item.articulo, item.precio, item.cantidad));
+    this.venta.detalles.forEach((item: any) => {
+      this.agregarDetalleVenta(item.idArticulo, item.articulo, item.precio, item.cantidad, item.descuento);
+    });
     this.getDetallesVenta.controls.forEach(control => control.disable());
   }
 
