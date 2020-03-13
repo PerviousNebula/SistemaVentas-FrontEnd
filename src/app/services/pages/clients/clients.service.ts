@@ -48,8 +48,8 @@ export class ClientsService {
                     );
   }
 
-  public filterClientes(hint: string, pageNumber: number = 1, pageSize: number = 10) {
-    return this.http.get(`${environment.url}/Personas/FiltrarClientes/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+  public filterClientes(model: any, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/Personas/FiltrarClientes?pageNumber=${pageNumber}&pageSize=${pageSize}`, model,
                          {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ clientes: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),

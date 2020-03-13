@@ -59,7 +59,7 @@ export class VentasEffects {
     filtrarVentas$ = this.actions$.pipe(
         ofType(ventasActions.FILTRAR_VENTAS),
         switchMap((action: ventasActions.FiltrarVentas) => {
-            return this.ventasService.filterVentas(action.payload.hint, action.payload.page).pipe(
+            return this.ventasService.filterVentas(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => new ventasActions.FiltrarVentasSuccess(
                     { ventas: resp.ventas, pagination: resp.pagination })
                 ),

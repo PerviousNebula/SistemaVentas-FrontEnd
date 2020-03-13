@@ -35,8 +35,8 @@ export class IncomesComponent implements OnInit, OnDestroy {
       tipo_comprobante: new FormControl(''),
       serie_comprobante: new FormControl(''),
       num_comprobante: new FormControl(''),
-      fecha_inicio: new FormControl(''),
-      fecha_fin: new FormControl(''),
+      fecha_inicio: new FormControl(null),
+      fecha_fin: new FormControl(null),
       activo: new FormControl(true)
     });
     this.subscription.add(this.store.select('ingresos').subscribe(node => {
@@ -67,8 +67,6 @@ export class IncomesComponent implements OnInit, OnDestroy {
 
   public filter(page?: number): void {
     this.filterSubmited = true;
-    if (!this.filterFormValue.fecha_inicio) { this.filterForm.value.fecha_inicio = null; }
-    if (!this.filterFormValue.fecha_fin) {     this.filterForm.value.fecha_fin = null; }
     this.store.dispatch(new ingresosActions.FiltrarIngresos({
       model: this.filterForm.value,
       page: !page ? 1 : this.pagination.CurrentPage + page

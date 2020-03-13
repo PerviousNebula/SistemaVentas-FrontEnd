@@ -110,13 +110,13 @@ export class FiltrarUsuarios implements Action {
 export class FiltrarUsuariosFail implements Action {
     readonly type = FILTRAR_USUARIOS_FAIL;
 
-    constructor(public payload: any) { }
+    constructor(public payload?: any) { }
 }
 
 export class FiltrarUsuariosSuccess implements Action {
     readonly type = FILTRAR_USUARIOS_SUCCESS;
 
-    constructor(public payload?: any) { }
+    constructor(public payload: any) { }
 }
 
 export class ActivarUsuarios implements Action {

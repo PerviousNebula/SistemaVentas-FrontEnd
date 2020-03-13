@@ -6,12 +6,61 @@
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
                 <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
+                        <form (ngSubmit)="filter()" [formGroup]="filterForm">
+                            <div class="row">
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>Cliente</label>
+                                    <select formControlName="idCliente" class="form-control form-control-line">
+                                        <option [ngValue]="0">Elija un cliente</option>
+                                        <option *ngFor="let cliente of clientes" [ngValue]="cliente.idPersona">{{ cliente.nombre }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>Tipo Comprobante</label>
+                                    <select formControlName="tipo_comprobante" class="form-control form-control-line">
+                                        <option value="">Elija un tipo de comprobante</option>
+                                        <option value="FACTURA">FACTURA</option>
+                                        <option value="BOLETA">BOLETA</option>
+                                        <option value="TICKET">TICKET</option>
+                                        <option value="GUIA">GUIA</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>Serie Comprobante</label>
+                                    <input formControlName="serie_comprobante" type="text" class="form-control form-control-line" placeholder="Serie del comprobante" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>No. Comprobante</label>
+                                    <input formControlName="num_comprobante" type="text" class="form-control form-control-line" placeholder="Número del comprobante" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>Fecha Inicio</label>
+                                    <input formControlName="fecha_inicio" type="date" class="form-control form-control-line" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <label>Fecha Fin</label>
+                                    <input formControlName="fecha_fin" type="date" class="form-control form-control-line" />
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                                    <span *ngIf="filterForm.value.activo" class="w-100 badge badge-success">ACEPTADO</span>
+                                    <span *ngIf="!filterForm.value.activo" class="w-100 badge badge-danger">ANULADO</span>
+                                    <div class="switch text-center mt-2">
+                                        <label>
+                                            <input formControlName="activo" type="checkbox" checked=""><span class="lever switch-col-red"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-6 col-sm-6 col-md-8 col-lg-3 col-xl-3 text-right">
+                                    <button type="submit" class="btn btn-primary mt-4">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
                         <div *ngIf="ventas.length" class="dt-buttons">
-                            <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printVentas()"><span>PDF</span></a>
+                            <a class="dt-button buttons-excel buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printExcelVentas()"><span>Excel</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printPDFVentas()"><span>PDF</span></a>
                         </div>
-                        <div *ngIf="ventas.length" id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filter()" placeholder="Serie del comprobante" aria-controls="example23"></label>
+                        <div id="example23_filter" class="dataTables_filter">
+                            <button class="btn btn-secondary" (click)="resetAll()">Reiniciar búsqueda</button>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
@@ -60,28 +109,13 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="10">
+                                    <th class="text-lg-right text-xl-right" rowspan="1" colspan="10">
                                         <a [routerLink]="['/sells', 'nuevo']" class="btn btn-primary btn-sm"><i class="fa fa-plus mr-1"></i>Nueva Venta</a>
                                     </th>
                                 </tr>
                             </tfoot>
                         </table>
-                        <div *ngIf="pagination && ventas.length" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
-                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
-                        </div>
-                        <div *ngIf="pagination && ventas.length" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="geVentas(-1)">
-                                Anterior
-                            </button>
-                            <span>
-                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
-                            </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getVentas(1)" class="paginate_button next" 
-                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
-                                Siguiente
-                            </button>
-                        </div>
+                        <app-pagination *ngIf="ventas.length" [pagination]="pagination" (event)="getVentas($event)"></app-pagination>
                     </div>
                 </div>
             </div>

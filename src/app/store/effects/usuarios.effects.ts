@@ -35,7 +35,7 @@ export class UsuariosEffects {
     filtrarUsuarios = this.actions$.pipe(
         ofType(usuariosActions.FILTRAR_USUARIOS),
         switchMap((action: usuariosActions.FiltrarUsuarios) => {
-            return this.usuariosService.filtrarUsuarios(action.payload.hint, action.payload.page).pipe(
+            return this.usuariosService.filtrarUsuarios(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => new usuariosActions.FiltrarUsuariosSuccess(
                     {
                         usuarios: resp.usuarios,

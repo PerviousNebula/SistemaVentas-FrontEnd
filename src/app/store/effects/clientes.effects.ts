@@ -31,7 +31,7 @@ export class ClientesEffects {
     filtrarClientes = this.actions$.pipe(
         ofType(clientesActions.FILTRAR_CLIENTES),
         switchMap((action: clientesActions.FiltrarClientes) => {
-            return this.clientesService.filterClientes(action.payload.hint, action.payload.page).pipe(
+            return this.clientesService.filterClientes(action.payload.model, action.payload.page).pipe(
                 map((resp: any) => new clientesActions.FiltrarClientesSuccess({
                     clientes: resp.clientes,
                     pagination: resp.pagination

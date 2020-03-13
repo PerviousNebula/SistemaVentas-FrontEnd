@@ -45,8 +45,8 @@ export class SellsService {
                     );
   }
 
-  public filterVentas(hint: string, pageNumber: number, pageSize: number = 10) {
-    return this.http.get(`${environment.url}/ventas/Filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {observe: 'response'})
+  public filterVentas(model: any, pageNumber: number, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/ventas/Filtrar?pageNumber=${pageNumber}&pageSize=${pageSize}`, model, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ ventas: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination'))})),
                       catchError(error => this.errorHandlerService.showError(error))

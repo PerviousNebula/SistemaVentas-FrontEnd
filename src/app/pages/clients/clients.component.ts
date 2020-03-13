@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { FormGroup, FormControl } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -19,13 +20,21 @@ export class ClientsComponent implements OnInit, OnDestroy {
   public clientes: Persona[];
   public pagination: Pagination;
   public loading: boolean;
-  private filtering: boolean;
-  public filterHint = '';
   private subscription = new Subscription();
+
+  // Filters
+  public filterForm: FormGroup;
+  private filterSubmited = false;
 
   constructor(private store: Store<AppState>) { }
 
   ngOnInit() {
+    this.filterForm = new FormGroup({
+      nombre: new FormControl(''),
+      direccion: new FormControl(''),
+      telefono: new FormControl(''),
+      email: new FormControl('')
+    });
     this.subscription.add(this.store.select('clientes').subscribe(node => {
       this.loading = node.loading;
       this.clientes = node.clientes;
@@ -38,11 +47,11 @@ export class ClientsComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  public getClientes(page: number) {
-    if (!this.filtering) {
+  public getClientes(page: number): void {
+    if (!this.filterSubmited) {
       this.store.dispatch(new clientesActions.CargarClientes(this.pagination.CurrentPage + page));
     } else {
-      this.filtrar(page);
+      this.filter(page);
     }
   }
 
@@ -88,13 +97,12 @@ export class ClientsComponent implements OnInit, OnDestroy {
     if (formValues && formValues.nombre) {
       formValues.tipo_persona = 'cliente';
       this.store.dispatch(new clientesActions.CrearClientes(formValues));
-      this.filterHint = '';
     } else if (formValues && !formValues.nombre) {
       Swal.fire('Nuevo cliente', 'El nombre del cliente es obligatorio!', 'error');
     }
   }
 
-  async editCliente(cliente: Persona) {
+  public async editCliente(cliente: Persona) {
     const { value: formValues } = await Swal.fire({
       title: 'Editar cliente',
       html:
@@ -144,24 +152,46 @@ export class ClientsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public filtrar(page: number = 0) {
-    if (this.filterHint.length) {
-      this.filtering = true;
-      this.store.dispatch(new clientesActions.FiltrarClientes(
-        {
-          hint: this.filterHint,
-          page: !page ? 1 : this.pagination.CurrentPage + page
-        }
-      ));
+  public filter(page: number = 0): void {
+    this.filterSubmited = true;
+    this.store.dispatch(new clientesActions.FiltrarClientes({
+        model: this.filterForm.value,
+        page: !page ? 1 : this.pagination.CurrentPage + page
+    }));
+  }
+
+  public printPDFClients(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterForm.value;
+      let url = `${environment.url}/pdfcreator/clientes?filtered=true`;
+      if (filter.nombre) { url += `&nombre=${filter.nombre}`; }
+      if (filter.direccion) { url += `&direccion=${filter.direccion}`; }
+      if (filter.telefono) { url += `&telefono=${filter.telefono}`; }
+      if (filter.email) { url += `&email=${filter.email}`; }
+      window.open(url);
     } else {
-      this.filtering = false;
-      this.store.dispatch(new clientesActions.CargarClientes(1));
+      window.open(`${environment.url}/pdfcreator/clientes?filtered=false`);
     }
   }
 
-  public printClients(): void {
-    window.open(this.filterHint.length ? `${environment.url}/pdfcreator/Clientes?filter=${this.filterHint}`
-                                       : `${environment.url}/pdfcreator/Clientes`, '_blank');
+  public printExcelClients(): void {
+    if (this.filterSubmited) {
+      const filter = this.filterForm.value;
+      let url = `${environment.url}/csvcreator/clientes?filtered=true`;
+      if (filter.nombre) { url += `&nombre=${filter.nombre}`; }
+      if (filter.direccion) { url += `&direccion=${filter.direccion}`; }
+      if (filter.telefono) { url += `&telefono=${filter.telefono}`; }
+      if (filter.email) { url += `&email=${filter.email}`; }
+      window.open(url);
+    } else {
+      window.open(`${environment.url}/csvcreator/clientes?filtered=false`);
+    }
+  }
+
+  public resetAll(): void {
+    this.filterSubmited = false;
+    this.filterForm.reset();
+    this.store.dispatch(new clientesActions.CargarClientes(1));
   }
 
 }

@@ -6,8 +6,43 @@
                 <h6 class="card-subtitle">Edite y cambie el estado de los usuarios</h6>
                 <div class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
+                        <form [formGroup]="filterForm" (ngSubmit)="filtrar()">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <label>Nombre</label>
+                                    <input formControlName="nombre" class="form-control form-control-line" type="text" placeholder="Nombre del usuario" />
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <label>Email</label>
+                                    <input formControlName="email" class="form-control form-control-line" type="email" placeholder="Email del usuario" />
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <label>Teléfono</label>
+                                    <input formControlName="telefono" class="form-control form-control-line" type="tel" placeholder="Teléfono del usuario" />
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <label>Rol</label>
+                                    <select formControlName="idRol" class="form-control form-control-line">
+                                        <option [ngValue]="0">Elija un rol</option>
+                                        <option *ngFor="let rol of roles" [ngValue]="rol.idRol">{{ rol.nombre }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                                    <span *ngIf="filterForm.value.activo" class="w-100 badge badge-success">ACTIVO</span>
+                                    <span *ngIf="!filterForm.value.activo" class="w-100 badge badge-danger">INACTIVO</span>
+                                    <div class="switch text-center mt-2">
+                                        <label>
+                                            <input formControlName="activo" type="checkbox" checked=""><span class="lever switch-col-red"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 text-right">
+                                    <button type="submit" class="btn btn-primary mt-4">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
                         <div id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre del usuario" aria-controls="example23"></label>
+                            <button class="btn btn-secondary" (click)="resetAll()">Reiniciar búsqueda</button>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
@@ -21,50 +56,40 @@
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                <ng-container *ngIf="usuarios.length; else noRecords">
+                                    <tr *ngFor="let usuario of usuarios">
+                                        <td width="10%">
+                                            <img class="img img-thumbnail" [src]="usuario.imgUrl | noImg" alt="profile-pic" />
+                                        </td>
+                                        <td class="align-middle">{{ usuario.nombre }}</td>
+                                        <td class="align-middle">{{ usuario.email }}</td>
+                                        <td class="align-middle">{{ usuario.telefono }}</td>
+                                        <td class="align-middle">{{ usuario.rol }}</td>
+                                        <td class="align-middle">
+                                            <span *ngIf="usuario.activo" class="badge badge-success">ACTIVO</span>
+                                            <span *ngIf="!usuario.activo" class="badge badge-danger">INACTIVO</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button [routerLink]="['/users', usuario.idUsuario]" class="btn btn-sm btn-info mr-1"><i class="fa fa-edit"></i></button>
+                                            <button *ngIf="usuario.activo" class="btn btn-sm btn-danger" (click)="desactivarUsuario(usuario)"><i class="fa fa-trash"></i></button>
+                                            <button *ngIf="!usuario.activo" class="btn btn-sm btn-info" (click)="activarUsuario(usuario)"><i class="fa fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                                <ng-template #noRecords>
+                                    <tr><td colspan="7"><h4 class="text-center m-1">No hay usuarios registrados...</h4></td></tr>
+                                </ng-template>
+                            </tbody>
                             <tfoot>
                                 <tr>
-                                    <th class="text-right" rowspan="1" colspan="7">
+                                    <th class="text-lg-right text-xl-right" rowspan="1" colspan="7">
                                         <a class="btn btn-primary btn-sm" [routerLink]="['/users','nuevo']"><i class="fa fa-plus mr-1"></i>Nuevo Usuario</a>
                                     </th>
                                 </tr>
                             </tfoot>
-                            <tbody>
-                                <tr *ngFor="let usuario of usuarios">
-                                    <td width="10%">
-                                        <img (click)="imgOverlayService.mostrarModal(usuario.imgUrl)" class="img img-thumbnail cursor-pointer" [src]="usuario.imgUrl | noImg" alt="profile-pic" />
-                                    </td>
-                                    <td class="align-middle">{{ usuario.nombre }}</td>
-                                    <td class="align-middle">{{ usuario.email }}</td>
-                                    <td class="align-middle">{{ usuario.telefono }}</td>
-                                    <td class="align-middle">{{ usuario.rol }}</td>
-                                    <td class="align-middle">
-                                        <span *ngIf="usuario.activo" class="badge badge-success">ACTIVO</span>
-                                        <span *ngIf="!usuario.activo" class="badge badge-danger">INACTIVO</span>
-                                    </td>
-                                    <td class="align-middle">
-                                        <button [routerLink]="['/users', usuario.idUsuario]" class="btn btn-sm btn-info mr-1"><i class="fa fa-edit"></i></button>
-                                        <button *ngIf="usuario.activo" class="btn btn-sm btn-danger" (click)="desactivarUsuario(usuario)"><i class="fa fa-trash"></i></button>
-                                        <button *ngIf="!usuario.activo" class="btn btn-sm btn-info" (click)="activarUsuario(usuario)"><i class="fa fa-undo"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
                         </table>
-                        <div *ngIf="pagination" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
-                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
-                        </div>
-                        <div *ngIf="pagination" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getUsuarios(-1)">
-                                Anterior
-                            </button>
-                            <span>
-                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
-                            </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getUsuarios(1)" class="paginate_button next" 
-                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
-                                Siguiente
-                            </button>
-                        </div>
+                        <app-pagination *ngIf="usuarios.length" [pagination]="pagination" (event)="getUsuarios($event)"></app-pagination>
                     </div>
                 </div>
             </div>
@@ -76,4 +101,3 @@
         <span>Cargando usuarios...</span>
     </div>
 </div>
-<app-image-overlay></app-image-overlay>

@@ -6,12 +6,35 @@
                 <h6 class="card-subtitle">Exportar información a Excel &amp; PDF</h6>
                 <div *ngIf="clientes" class="table-responsive m-t-40">
                     <div id="example23_wrapper" class="dataTables_wrapper">
+                        <form [formGroup]="filterForm" (ngSubmit)="filter()">
+                            <div class="row">
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <label>Nombre</label>
+                                    <input formControlName="nombre" class="form-control form-control-line" type="text" placeholder="Nombre del cliente">
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <label>Dirección</label>
+                                    <input formControlName="direccion" class="form-control form-control-line" type="text" placeholder="Nombre del cliente">
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <label>Teléfono</label>
+                                    <input formControlName="telefono" class="form-control form-control-line" type="tel" placeholder="Nombre del cliente">
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-6 col-lg-3 col-xl-3">
+                                    <label>Email</label>
+                                    <input formControlName="email" class="form-control form-control-line" type="email" placeholder="Nombre del cliente">
+                                </div>
+                                <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 text-right">
+                                    <button type="submit" class="btn btn-primary">Buscar</button>
+                                </div>
+                            </div>
+                        </form>
                         <div *ngIf="clientes.length" class="dt-buttons">
-                            <a class="dt-button buttons-excel buttons-html5" tabindex="0" aria-controls="example23" href="#"><span>Excel</span></a>
-                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printClients()"><span>PDF</span></a>
+                            <a class="dt-button buttons-excel buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printExcelClients()"><span>Excel</span></a>
+                            <a class="dt-button buttons-pdf buttons-html5 cursor-pointer" tabindex="0" aria-controls="example23" (click)="printPDFClients()"><span>PDF</span></a>
                         </div>
-                        <div *ngIf="clientes.length" id="example23_filter" class="dataTables_filter">
-                            <label>Buscar:<input [(ngModel)]="filterHint" type="search" (keyup.Enter)="filtrar()" placeholder="Nombre del cliente" aria-controls="example23"></label>
+                        <div id="example23_filter" class="dataTables_filter">
+                            <button class="btn btn-secondary" (click)="resetAll()">Reiniciar búsqueda</button>
                         </div>
                         <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
                             <thead>
@@ -23,13 +46,6 @@
                                     <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
                                 </tr>
                             </thead>
-                            <tfoot>
-                                <tr>
-                                    <th class="text-right" rowspan="1" colspan="5">
-                                        <button class="btn btn-primary btn-sm" (click)="newCliente()"><i class="fa fa-plus mr-1"></i>Nuevo Cliente</button>
-                                    </th>
-                                </tr>
-                            </tfoot>
                             <tbody>
                                 <ng-container *ngIf="clientes.length; else sinRegistros">
                                     <tr *ngFor="let cliente of clientes">
@@ -50,23 +66,15 @@
                                     </tr>
                                 </ng-template>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th class="text-lg-right text-xl-right" rowspan="1" colspan="5">
+                                        <button class="btn btn-primary btn-sm" (click)="newCliente()"><i class="fa fa-plus mr-1"></i>Nuevo Cliente</button>
+                                    </th>
+                                </tr>
+                            </tfoot>
                         </table>
-                        <div *ngIf="pagination && clientes.length" class="dataTables_info" id="example23_info" role="status" aria-live="polite">
-                            Mostrando {{ pagination.CurrentPage * 10 - 9 }} a {{ pagination.CurrentPage * pagination.PageSize }} de {{ pagination.TotalCount }} registros
-                        </div>
-                        <div *ngIf="pagination && clientes.length" class="dataTables_paginate paging_simple_numbers" id="example_paginate">
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasPrevious}" [disabled]="!pagination.HasPrevious" class="paginate_button previous" aria-controls="example" data-dt-idx="0" 
-                                    tabindex="0" id="example_previous" (click)="getClientes(-1)">
-                                Anterior
-                            </button>
-                            <span>
-                                <a class="paginate_button current" aria-controls="example" data-dt-idx="1" tabindex="0">{{ pagination.CurrentPage }}</a>
-                            </span>
-                            <button [ngClass]="{'disabled not-allowed': !pagination.HasNext}" [disabled]="!pagination.HasNext" (click)="getClientes(1)" class="paginate_button next" 
-                                    aria-controls="example" data-dt-idx="2" tabindex="0" id="example_next">
-                                Siguiente
-                            </button>
-                        </div>
+                        <app-pagination *ngIf="clientes.length" [pagination]="pagination" (event)="getClientes($event)"></app-pagination>
                     </div>
                 </div>
             </div>

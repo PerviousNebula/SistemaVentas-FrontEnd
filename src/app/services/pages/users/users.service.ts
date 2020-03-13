@@ -134,8 +134,8 @@ export class UsersService {
                     );
   }
 
-  public filtrarUsuarios(hint: string, pageNumber: number = 1, pageSize: number = 10) {
-    return this.http.get(`${environment.url}/usuarios/filtrar/${hint}?pageNumber=${pageNumber}&pageSize=${pageSize}`, {observe: 'response'})
+  public filtrarUsuarios(model: any, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.post(`${environment.url}/usuarios/filtrar?pageNumber=${pageNumber}&pageSize=${pageSize}`, model, {observe: 'response'})
                     .pipe(
                       map((resp: any) => ({ usuarios: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
                       catchError(error => this.errorHandlerService.showError(error))
