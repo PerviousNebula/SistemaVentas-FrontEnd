@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 
 // Services
 import {
+  DashboardService,
   CategoriesService,
   ClientsService,
   ProductsService,
@@ -12,11 +13,13 @@ import {
   SellsService,
   SettingsService,
   SidebarService,
-  SharedService
+  SharedService,
+  FilterService
 } from './service.index';
 
 @NgModule({
   providers: [
+    DashboardService,
     CategoriesService,
     ClientsService,
     ProductsService,
@@ -27,7 +30,8 @@ import {
     SellsService,
     SettingsService,
     SharedService,
-    SidebarService
+    SidebarService,
+    FilterService
   ]
 })
 export class ServiceModule { }

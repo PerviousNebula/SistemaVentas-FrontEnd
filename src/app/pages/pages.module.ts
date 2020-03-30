@@ -13,7 +13,9 @@ import { PipesModule } from '../pipes/pipes.module';
 import { PAGES_ROUTES } from './pages.routes';
 
 // Shared Components
-import { CategoriesComponent } from './categories/categories.component';
+import { PaginationComponent } from '../components/pagination/pagination.component';
+import { ImageOverlayComponent } from '../components/image-overlay/image-overlay.component';
+import { GraficoComponent } from '../components/grafico/grafico.component';
 
 // Interceptors
 import { TokenInterceptorService } from '../services/interceptors/token-interceptor.service';
@@ -21,31 +23,26 @@ import { TokenInterceptorService } from '../services/interceptors/token-intercep
 // Components
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
-import { Graficas1Component } from '../pages/graficas1/graficas1.component';
-import { IncrementadorComponent } from '../components/incrementador/incrementador.component';
-import { GraficoDonaComponent } from '../components/grafico-dona/grafico-dona.component';
+import { CategoriesComponent } from './categories/categories.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { ProductsComponent } from './products/products.component';
 import { RolesComponent } from './roles/roles.component';
 import { UsersComponent } from './users/users.component';
 import { UsersManagmentComponent } from './users-managment/users-managment.component';
-import { ImageOverlayComponent } from '../components/image-overlay/image-overlay.component';
 import { ClientsComponent } from './clients/clients.component';
 import { SupplierComponent } from './supplier/supplier.component';
 import { IncomesComponent } from './incomes/incomes.component';
 import { IncomesManagementComponent } from './incomes-management/incomes-management.component';
 import { SellsComponent } from './sells/sells.component';
 import { SellsManagementComponent } from './sells-management/sells-management.component';
-import { PaginationComponent } from '../components/pagination/pagination.component';
+import { SearchComponent } from './search/search.component';
+import { StoreModule } from '@ngrx/store';
 
 @NgModule({
     declarations: [
-        PagesComponent,
         DashboardComponent,
-        Graficas1Component,
-        IncrementadorComponent,
-        GraficoDonaComponent,
         ImageOverlayComponent,
+        GraficoComponent,
         PaginationComponent,
         AccountSettingsComponent,
         CategoriesComponent,
@@ -58,7 +55,8 @@ import { PaginationComponent } from '../components/pagination/pagination.compone
         IncomesComponent,
         IncomesManagementComponent,
         SellsComponent,
-        SellsManagementComponent
+        SellsManagementComponent,
+        SearchComponent
     ],
     imports: [
         CommonModule,
@@ -71,9 +69,6 @@ import { PaginationComponent } from '../components/pagination/pagination.compone
         PipesModule
     ],
     exports: [
-        PagesComponent,
-        DashboardComponent,
-        Graficas1Component
     ],
     providers: [
         {

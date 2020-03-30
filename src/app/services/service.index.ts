@@ -1,4 +1,5 @@
 // Pages
+export { DashboardService } from './pages/dashboard/dashboard.service';
 export { CategoriesService } from './pages/categories/categories.service';
 export { ClientsService } from './pages/clients/clients.service';
 export { ProductsService } from './pages/products/products.service';
@@ -15,3 +16,4 @@ export { SettingsService } from './settings/settings.service';
 export { SharedService } from './shared/shared.service';
 export { SidebarService } from './shared/sidebar.service';
 export { ErrorHandlerService } from './shared/error-handler.service';
+export { FilterService } from './shared/filter.service';

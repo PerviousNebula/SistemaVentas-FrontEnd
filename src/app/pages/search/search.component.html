@@ -1,0 +1,265 @@
+<div *ngIf="!loading; else loadingRecords" class="row animated fadeIn">
+    <ng-container *ngIf="filtrado && !filtrado.sinResultados; else noRecords">
+        <div *ngIf="filtrado.categorias.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Categorías</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descripción</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let categoria of filtrado.categorias">
+                                        <td>{{ categoria.nombre }}</td>
+                                        <td>{{ categoria.descripcion }}</td>
+                                        <td>
+                                            <span *ngIf="categoria.activo" class="badge badge-success">ACTIVA</span>
+                                            <span *ngIf="!categoria.activo" class="badge badge-danger">INACTIVA</span>
+                                        </td>
+                                        <td>
+                                            <button *ngIf="categoria.activo" class="btn btn-sm btn-danger" (click)="desactivarCategoria(categoria)"><i class="fa fa-trash"></i></button>
+                                            <button *ngIf="!categoria.activo" class="btn btn-sm btn-info" (click)="activateCategoria(categoria)"><i class="fa fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.articulos.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Artículos</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Descripción</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let articulo of filtrado.articulos">
+                                        <td>{{ articulo.nombre }}</td>
+                                        <td>{{ articulo.descripcion }}</td>
+                                        <td>
+                                            <span *ngIf="articulo.activo" class="badge badge-success">ACTIVO</span>
+                                            <span *ngIf="!articulo.activo" class="badge badge-danger">INACTIVO</span>
+                                        </td>
+                                        <td>
+                                            <button *ngIf="articulo.activo" class="btn btn-sm btn-danger" (click)="desactivateArticulo(articulo)"><i class="fa fa-trash"></i></button>
+                                            <button *ngIf="!articulo.activo" class="btn btn-sm btn-info" (click)="activateArticulo(articulo)"><i class="fa fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.ingresos.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Ingresos</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Número comprobante</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Serie comprobante</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let ingreso of filtrado.ingresos">
+                                        <td>{{ ingreso.num_comprobante }}</td>
+                                        <td>{{ ingreso.serie_comprobante }}</td>
+                                        <td>
+                                            <span *ngIf="ingreso.estado === 'Aceptado'" class="badge badge-success">ACEPTADO</span>
+                                            <span *ngIf="ingreso.estado !== 'Aceptado'" class="badge badge-danger">ANULADO</span>
+                                        </td>
+                                        <td>
+                                            <a [routerLink]="['/incomes', ingreso.idIngreso]" type="button" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
+                                            <button *ngIf="ingreso.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger" (click)="desactivateIngreso(ingreso)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.proveedores.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Proveedores</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Email</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Número documento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let proveedor of filtrado.proveedores">
+                                        <td>{{ proveedor.nombre }}</td>
+                                        <td>{{ proveedor.email }}</td>
+                                        <td>{{ proveedor.num_documento }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.ventas.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Ventas</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Número comprobante</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Serie comprobante</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let venta of filtrado.ventas">
+                                        <td>{{ venta.num_comprobante }}</td>
+                                        <td>{{ venta.serie_comprobante }}</td>
+                                        <td>
+                                            <span *ngIf="venta.estado === 'Aceptado'" class="badge badge-success">ACEPTADO</span>
+                                            <span *ngIf="venta.estado !== 'Aceptado'" class="badge badge-danger">ANULADO</span>
+                                        </td>
+                                        <td>
+                                            <a [routerLink]="['/sells', venta.idVenta]" type="button" class="btn btn-sm btn-info mr-1"><i class="fa fa-eye"></i></a>
+                                            <button *ngIf="venta.estado === 'Aceptado'" type="button" class="btn btn-sm btn-danger mr-1" (click)="desactivateVenta(venta)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.clientes.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Clientes</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Email</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Número documento</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let cliente of filtrado.clientes">
+                                        <td>{{ cliente.nombre }}</td>
+                                        <td>{{ cliente.email }}</td>
+                                        <td>{{ cliente.num_documento }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="filtrado.usuarios.length" class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Usuarios</h4>
+                    <div class="table-responsive">
+                        <div id="example23_wrapper" class="dataTables_wrapper">
+                            <table id="example23" class="display nowrap table table-hover table-striped table-bordered dataTable" cellspacing="0" width="100%" role="grid" aria-describedby="example23_info" style="width: 100%;">
+                                <thead>
+                                    <tr role="row">
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;"></th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 244px;">Nombre</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Email</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;">Estado</th>
+                                        <th tabindex="0" aria-controls="example23" rowspan="1" colspan="1" style="width: 359px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let usuario of filtrado.usuarios">
+                                        <td width="10%">
+                                            <img class="img-thumbnail" [src]="usuario.imgUrl | noImg" alt="profile-pic" />
+                                        </td>
+                                        <td class="align-middle">{{ usuario.nombre }}</td>
+                                        <td class="align-middle">{{ usuario.email }}</td>
+                                        <td class="align-middle">
+                                            <span *ngIf="usuario.activo" class="badge badge-success">ACTIVO</span>
+                                            <span *ngIf="!usuario.activo" class="badge badge-danger">INACTIVO</span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <button *ngIf="usuario.activo" class="btn btn-sm btn-danger" (click)="desactivarUsuario(usuario)"><i class="fa fa-trash"></i></button>
+                                            <button *ngIf="!usuario.activo" class="btn btn-sm btn-info" (click)="activarUsuario(usuario)"><i class="fa fa-undo"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #noRecords>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4>No se encontraron resultados</h4>
+                    <h6 class="card-subtitle">Lo sentimos, no hubo ningún resultado que coincidiera con su búsqueda</h6>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
+<ng-template #loadingRecords>
+    <div class="row animated fadeIn">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <i class="fa fa-spin fa-spinner fa-4x"></i>
+                        <h4>Buscando en el sistema...</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

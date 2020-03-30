@@ -16,3 +16,5 @@ export { Settings } from './settings/settings';
 export { Category } from './shared/category';
 export { SubCategory } from './shared/sub-category';
 export { Pagination } from './shared/pagination';
+export { ChartModel } from './shared/chartModel';
+

@@ -9,16 +9,16 @@ import { Title, Meta, MetaDefinition } from '@angular/platform-browser';
   templateUrl: './breadcrumbs.component.html'
 })
 export class BreadcrumbsComponent implements OnInit {
-  public pageTitle:string;
+  public pageTitle: string;
 
-  constructor(private router:Router,
-              private title:Title,
-              private meta:Meta) {     
+  constructor(private router: Router,
+              private title: Title,
+              private meta: Meta) {
     this.getDataRoute().subscribe((resp) => {
       this.pageTitle = resp.title;
       this.title.setTitle(resp.title);
       const METATAG: MetaDefinition = {
-        name: "description",
+        name: 'description',
         content: resp.desc
       };
       this.meta.updateTag(METATAG);
@@ -28,10 +28,10 @@ export class BreadcrumbsComponent implements OnInit {
   ngOnInit() {
   }
 
-  public getDataRoute():Observable<any> {
+  public getDataRoute(): Observable<any> {
     return this.router.events.pipe(filter(routerEvent => routerEvent instanceof ActivationEnd),
-                                   filter((routerEvent:any) => !routerEvent.snapshot.firstChild),
-                                   map((routerEvent:any) => routerEvent.snapshot.data));
+                                   filter((routerEvent: any) => !routerEvent.snapshot.firstChild),
+                                   map((routerEvent: any) => routerEvent.snapshot.data));
   }
 
 }

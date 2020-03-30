@@ -54,7 +54,7 @@ export class IncomesManagementComponent implements OnInit, OnDestroy {
       this.subscription.add(store.select('ingresos').subscribe(node => {
         this.loading = node.loading;
         this.ingreso = node.ingresos[0];
-        if (this.ingreso !== null && this.ingreso.detalles !== null && this.routeParam !== 'nuevo') {
+        if (!!this.ingreso && !!this.ingreso.detalles && this.routeParam !== 'nuevo') {
           this.popularFormulario();
         }
       }));
@@ -72,11 +72,11 @@ export class IncomesManagementComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  get getDetallesIngreso(): FormArray {
+  public get getDetallesIngreso(): FormArray {
     return this.incomeForm.get('detalles') as FormArray;
   }
 
-  get totalDetallesIngreso(): number {
+  public get totalDetallesIngreso(): number {
     let total = 0;
     const detalles = this.getDetallesIngreso.getRawValue();
     detalles.forEach(detalle => total += detalle.precio * detalle.cantidad);

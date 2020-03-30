@@ -66,6 +66,22 @@ export class ArticulosEffects {
     );
 
     @Effect()
+    filtrarArticulosNombre$ = this.actions$.pipe(
+        ofType(articulosActions.FILTRAR_ARTICULOS_NOMBRE),
+        switchMap((action: articulosActions.FiltrarArticulosNombre) => {
+            return this.articulosService.filterArticulosByNameDesc(action.payload.filter,
+                                                                   action.payload.page,
+                                                                   action.payload.pageSize).pipe(
+                map((resp: any) => new articulosActions.FiltrarArticulosNombreSuccess({
+                    articulos: resp.articulos,
+                    pagination: resp.pagination
+                })),
+                catchError(error => of(new articulosActions.FiltrarArticulosNombreFail(error)))
+            );
+        })
+    );
+
+    @Effect()
     activarArticulos$ = this.actions$.pipe(
         ofType(articulosActions.ACTIVAR_ARTICULOS),
         switchMap((action: articulosActions.ActivarArticulos) => {

@@ -11,7 +11,6 @@ import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
 import * as usuariosActions from '../../store/actions';
 
-
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html'
@@ -68,6 +67,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   public activarUsuario(usuario: Usuario): void {
+    usuario.activo = true;
     this.store.dispatch(new usuariosActions.ActivarUsuarios(usuario));
   }
 

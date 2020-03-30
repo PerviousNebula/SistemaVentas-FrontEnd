@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Usuario } from '../../interfaces/interfaces.index';
+import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
 
-// RxJS
-import { Subscription } from 'rxjs';
+// Interfaces
+import { Usuario } from '../../interfaces/interfaces.index';
 
 // Services
 import { UsersService } from '../../services/pages/users/users.service';
@@ -80,7 +80,7 @@ export class UsersManagmentComponent implements OnInit, OnDestroy {
           tipo_documento: this.usuario.tipo_documento,
           num_documento: this.usuario.num_documento,
           idRol: this.usuario.idRol,
-          imgUrl: this.usuario.imgUrl ? `http://localhost:5000${this.usuario.imgUrl}` : './assets/images/users/rol.jpg'
+          imgUrl: this.usuario.imgUrl ? this.usuario.imgUrl : './assets/images/users/rol.jpg'
         });
       }
     }));
@@ -110,7 +110,7 @@ export class UsersManagmentComponent implements OnInit, OnDestroy {
     }));
   }
 
-  public guardarCambios() {
+  public guardarCambios(): void {
     // Se carga primero la imagen en el servidor siempre y cuando el formulario sea válido
     if (this.formUsuario.valid) {
       // Creación de un nuevo usuario
@@ -146,9 +146,9 @@ export class UsersManagmentComponent implements OnInit, OnDestroy {
     }
   }
 
-  public selectImg() { document.getElementById('imgUrlInput').click(); }
+  public selectImg(): void { document.getElementById('imgUrlInput').click(); }
 
-  public showImgPreview(img) {
+  public showImgPreview(img): void {
     this.profilePic = img.target.files[0];
     const reader = new FileReader();
     reader.readAsDataURL(this.profilePic);

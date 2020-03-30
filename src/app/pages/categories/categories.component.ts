@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FormGroup, FormControl } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 // Interfaces
@@ -10,7 +11,6 @@ import { Categoria, Pagination } from '../../interfaces/interfaces.index';
 import { Store } from '@ngrx/store';
 import { AppState } from 'src/app/store/app.reducer';
 import * as categoriasActions from '../../store/actions';
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-categories',

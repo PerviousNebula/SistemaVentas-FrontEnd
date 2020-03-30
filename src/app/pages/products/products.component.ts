@@ -218,13 +218,13 @@ export class ProductsComponent implements OnInit, OnDestroy {
     if (this.filterSubmited) {
       const filter = this.filterFormValue;
       let url = `${environment.url}/csvcreator/Articulos?`;
-      if (filter.nombre) url += `nombre=${filter.nombre}`;
-      if (filter.descripcion) url += `&descripcion=${filter.descripcion}`;
-      if (filter.codigo) url += `&codigo=${filter.codigo}`;
-      if (filter.stock > 0) url += `&stock=${filter.stock}`;
-      if (filter.precio_min > 0) url += `&precio_min=${filter.precio_min}`;
-      if (filter.precio_max > 0) url += `&precio_max=${filter.precio_max}`;
-      if (filter.idCategoria > 0) url += `&idCategoria=${filter.idCategoria}`;
+      if (filter.nombre) { url += `nombre=${filter.nombre}`; }
+      if (filter.descripcion) { url += `&descripcion=${filter.descripcion}`; }
+      if (filter.codigo) { url += `&codigo=${filter.codigo}`; }
+      if (filter.stock > 0) { url += `&stock=${filter.stock}`; }
+      if (filter.precio_min > 0) { url += `&precio_min=${filter.precio_min}`; }
+      if (filter.precio_max > 0) { url += `&precio_max=${filter.precio_max}`; }
+      if (filter.idCategoria > 0) { url += `&idCategoria=${filter.idCategoria}`; }
       url += `&activo=${filter.activo}`;
       window.open(url);
     } else {

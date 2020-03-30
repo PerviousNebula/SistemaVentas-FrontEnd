@@ -4,8 +4,7 @@ declare function init_plugins();
 
 @Component({
   selector: 'app-pages',
-  templateUrl: './pages.component.html',
-  styles: []
+  templateUrl: './pages.component.html'
 })
 export class PagesComponent implements OnInit {
 

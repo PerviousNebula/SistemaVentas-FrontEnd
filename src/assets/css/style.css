@@ -5830,18 +5830,18 @@ File: scss
       position: relative; }
   /*This is for chat page*/
   .chat-main-box .chat-left-aside {
-    left: -250px;
-    position: absolute;
+    left: -250px !important;
+    position: absolute !important;
     -webkit-transition: 0.5s ease-in;
     -o-transition: 0.5s ease-in;
     transition: 0.5s ease-in;
     background: #ffffff; }
     .chat-main-box .chat-left-aside.open-pnl {
-      left: 0px; }
+      left: 0px !important; }
     .chat-main-box .chat-left-aside .open-panel {
-      display: block; }
+      display: block !important; }
   .chat-main-box .chat-right-aside {
-    width: 100%; }
+    width: 100% !important; }
   /*Timeline*/
   ul.timeline:before {
     left: 40px; }

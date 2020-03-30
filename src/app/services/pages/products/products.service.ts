@@ -77,6 +77,15 @@ export class ProductsService {
                     );
   }
 
+  public filterArticulosByNameDesc(filter: string, pageNumber: number = 1, pageSize: number = 10) {
+    return this.http.get(`${environment.url}/articulos/BuscarPorNombreDesc/${filter}?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+                         {observe: 'response'})
+                    .pipe(
+                      map((resp: any) => ({ articulos: resp.body, pagination: JSON.parse(resp.headers.get('X-Pagination')) })),
+                      catchError(error => this.errorHandlerService.showError(error))
+                    );
+  }
+
   public filterArticuloByCode(code: string) {
     return this.http.get<Articulo>(`${environment.url}/Articulos/BuscarCodigoIngreso/${code}`)
              .pipe(

@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
+import { map, catchError } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import Swal from 'sweetalert2';
 
 // Interfaces
 import { Usuario, Category } from '../../../interfaces/interfaces.index';
-
-// RxJS
-import { map, catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
 
 // Services
 import { ErrorHandlerService } from '../../shared/error-handler.service';
@@ -22,25 +20,19 @@ export class UsersService {
   public usuario: Usuario;
   public menu: Category[];
 
-  constructor(private http: HttpClient, private router: Router, private errorHandlerService: ErrorHandlerService) {
+  constructor(private http: HttpClient,
+              private router: Router,
+              private errorHandlerService: ErrorHandlerService) {
     this.loadFromStorage();
   }
 
-  public isLogged() {
-    return this.token.length;
-  }
+  public isLogged() { return this.token.length; }
 
-  public isAdmin() {
-    return this.usuario.rol === 'Administrador';
-  }
+  public isAdmin() { return this.usuario.rol === 'Administrador'; }
 
-  public isAlmacenero() {
-    return this.usuario.rol === 'Almacenero';
-  }
+  public isAlmacenero() { return this.usuario.rol === 'Almacenero'; }
 
-  public isVendedor() {
-    return this.usuario.rol === 'Vendedor';
-  }
+  public isVendedor() { return this.usuario.rol === 'Vendedor'; }
 
   public loadFromStorage() {
     if (localStorage.getItem('token')) {
@@ -112,8 +104,15 @@ export class UsersService {
     return this.http.put(`${environment.url}/usuarios/actualizar`, model, {observe: 'response'})
                     .pipe(
                       map((resp: any) => {
-                        Swal.fire('Editar usuario', 'El usuario ha sido editado!', 'success');
-                        this.router.navigateByUrl('/users');
+                        if (this.usuario.idUsuario == model.idUsuario) {
+                          Swal.fire('Editar Perfil',
+                                    'Tus datos han sido actualizados! Los cambios se verán reflejados la próxima vez que inicie sesión',
+                                    'success');
+                          this.router.navigateByUrl('/dashboard');
+                        } else {
+                          Swal.fire('Editar Usuario', 'El usuario ha sido editado!', 'success');
+                          this.router.navigateByUrl('/users');
+                        }
                         return {usuarios: resp.body.usuarios, pagination: JSON.parse(resp.headers.get('X-Pagination'))};
                       }),
                       catchError(error => this.errorHandlerService.showError(error))
@@ -124,6 +123,7 @@ export class UsersService {
     const formData = new FormData();
     formData.append('name', image.name);
     formData.append('image', image);
+    formData.append('idUsuario', this.usuario.idUsuario.toString());
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');

@@ -39,7 +39,7 @@ export class ImageOverlayComponent implements OnInit {
     });
   }
 
-  get getArticulosForm(): FormArray { return this.articulosForm.get('articulos') as FormArray; }
+  public get getArticulosForm(): FormArray { return this.articulosForm.get('articulos') as FormArray; }
 
   public createArticulo(articulo: Articulo): FormGroup {
     return new FormGroup({
@@ -54,8 +54,8 @@ export class ImageOverlayComponent implements OnInit {
 
   public filtrarArticulos(filter: string, page: number = 0): void {
     if (filter.length) {
-      this.store.dispatch(new articulosActions.FiltrarArticulos({
-        hint: filter,
+      this.store.dispatch(new articulosActions.FiltrarArticulosNombre({
+        filter,
         page: this.pagination ? this.pagination.CurrentPage + page : 1,
         pageSize: 5
       }));

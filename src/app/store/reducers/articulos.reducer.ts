@@ -115,6 +115,30 @@ export function articulosReducer(state = estadoInicial, action: fromArticulos.ar
                     url: action.payload.url
                 }
             };
+        case fromArticulos.FILTRAR_ARTICULOS_NOMBRE:
+            return {
+                ...state,
+                loading: true
+            };
+        case fromArticulos.FILTRAR_ARTICULOS_NOMBRE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                loaded: true,
+                articulos: [...action.payload.articulos],
+                pagination: {...action.payload.pagination}
+            };
+        case fromArticulos.FILTRAR_ARTICULOS_NOMBRE_FAIL:
+            return {
+                ...state,
+                loading: false,
+                loaded: false,
+                error: {
+                    status: action.payload.status,
+                    message: action.payload.message,
+                    url: action.payload.url
+                }
+            };
         case fromArticulos.ACTIVAR_ARTICULOS:
             return {
                 ...state,

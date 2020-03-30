@@ -25,6 +25,10 @@ export const FILTRAR_ARTICULOS = '[Articulos] Filtrar articulos';
 export const FILTRAR_ARTICULOS_FAIL = '[Articulos] Filtrar articulos FAIL';
 export const FILTRAR_ARTICULOS_SUCCESS = '[Articulos] Filtrar articulos SUCCESS';
 
+export const FILTRAR_ARTICULOS_NOMBRE = '[Articulos] Filtrar articulos nombre';
+export const FILTRAR_ARTICULOS_NOMBRE_FAIL = '[Articulos] Filtrar articulos nombre FAIL';
+export const FILTRAR_ARTICULOS_NOMBRE_SUCCESS = '[Articulos] Filtrar articulos nombre SUCCESS';
+
 export class CargarArticulos implements Action {
     readonly type = CARGAR_ARTICULOS;
 
@@ -133,6 +137,24 @@ export class FiltrarArticulosSuccess implements Action {
     constructor(public payload: any) { }
 }
 
+export class FiltrarArticulosNombre implements Action {
+    readonly type = FILTRAR_ARTICULOS_NOMBRE;
+
+    constructor(public payload: any) { }
+}
+
+export class FiltrarArticulosNombreFail implements Action {
+    readonly type = FILTRAR_ARTICULOS_NOMBRE_FAIL;
+
+    constructor(public payload?: any) { }
+}
+
+export class FiltrarArticulosNombreSuccess implements Action {
+    readonly type = FILTRAR_ARTICULOS_NOMBRE_SUCCESS;
+
+    constructor(public payload: any) { }
+}
+
 export type articulosAcciones = CargarArticulos |
                                 CargarArticulosFail |
                                 CargarArticulosSuccess |
@@ -150,4 +172,7 @@ export type articulosAcciones = CargarArticulos |
                                 DesactivarArticulosSuccess |
                                 ActivarArticulos |
                                 ActivarArticulosFail |
-                                ActivarArticulosSuccess;
+                                ActivarArticulosSuccess |
+                                FiltrarArticulosNombre |
+                                FiltrarArticulosNombreFail |
+                                FiltrarArticulosNombreSuccess;

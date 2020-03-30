@@ -53,7 +53,7 @@ export class SellsManagementComponent implements OnInit, OnDestroy {
       this.subscription.add(this.store.select('ventas').subscribe(node => {
         this.loading = node.loading;
         this.venta = node.ventas[0];
-        if (this.venta !== undefined && this.venta.detalles != null && this.routeParam !== 'nuevo') {
+        if (!!this.venta && !!this.venta.detalles && this.routeParam !== 'nuevo') {
             this.popularFormulario();
         }
       }));
@@ -70,11 +70,11 @@ export class SellsManagementComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  get getDetallesVenta(): FormArray {
+  public get getDetallesVenta(): FormArray {
     return this.sellForm.get('detalles') as FormArray;
   }
 
-  get totalDetallesVenta(): number {
+  public get totalDetallesVenta(): number {
     let total = 0;
     const detalles = this.getDetallesVenta.getRawValue();
     detalles.forEach(detalle => total += (detalle.precio * detalle.cantidad) - detalle.descuento);
